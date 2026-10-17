@@ -1,0 +1,861 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Bitácora de Café</title>
+<meta name="description" content="Registro de preparaciones de café con valoración de cata y sugerencias de receta.">
+<meta name="theme-color" content="#F1F2EE" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#15120F" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Café">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<script src="config.js"></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<style>
+/* Layout: app de una columna para móvil, cabecera fija, barra de pestañas inferior; ficha de cata como unidad visual */
+:root{
+  --bg:#F1F2EE; --surface:#FFFFFF; --sunk:#E6E8E2; --line:#D5D8D0;
+  --ink:#1D1B18; --muted:#666A61; --accent:#9E2338; --accent-ink:#FFFFFF; --accent-soft:#F4DEE2;
+  --water:#2F6F8F;
+  --s-low:#B4553C; --s-mid:#C78A1E; --s-good:#6E8B2E; --s-top:#2F6B3A;
+  --display:"Young Serif",Georgia,"Times New Roman",serif;
+  --body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#15120F; --surface:#201B17; --sunk:#2A241F; --line:#3A322B;
+  --ink:#EFE8E0; --muted:#A79C90; --accent:#E25B70; --accent-ink:#1A0E10; --accent-soft:#3D2027;
+  --water:#6FB3D3;
+  --s-low:#D7775E; --s-mid:#E2A540; --s-good:#9DB653; --s-top:#5FB474; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#15120F; --surface:#201B17; --sunk:#2A241F; --line:#3A322B;
+  --ink:#EFE8E0; --muted:#A79C90; --accent:#E25B70; --accent-ink:#1A0E10; --accent-soft:#3D2027;
+  --water:#6FB3D3;
+  --s-low:#D7775E; --s-mid:#E2A540; --s-good:#9DB653; --s-top:#5FB474; color-scheme:dark}
+*{box-sizing:border-box}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0}
+img{max-width:100%}
+[hidden]{display:none!important}
+html,body{background:var(--bg)}
+body{color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.45;-webkit-tap-highlight-color:transparent}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:560px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 calc(96px + env(safe-area-inset-bottom,0px))}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:14px 10px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line)}
+h1{font-family:var(--display);font-weight:400;font-size:1.45rem;margin:0;letter-spacing:-.01em}
+.hdr{display:flex;align-items:center;gap:4px;min-width:0}
+.sync{border:0;background:none;font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;text-align:right;padding:6px 8px;border-radius:999px;font-weight:600;line-height:1.2}
+.sync.act{background:var(--accent);color:var(--accent-ink)}
+.sync.warn{color:var(--s-low)}
+.gear{border:0;background:none;width:38px;height:38px;border-radius:10px;display:grid;place-items:center;color:var(--muted);flex:none}
+.gear[aria-pressed="true"]{color:var(--accent);background:var(--accent-soft)}
+.gear svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;font-size:.9rem}
+.kv span:nth-child(odd){color:var(--muted)}
+.kv span:nth-child(even){min-width:0;overflow-wrap:anywhere}
+.filebtn{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.filebtn input{position:absolute;inset:0;opacity:0;cursor:pointer}
+h2{font-family:var(--display);font-weight:400;font-size:1.2rem;margin:0;text-wrap:balance}
+.label{font-size:.72rem;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);font-weight:600}
+.view{display:flex;flex-direction:column;gap:22px;padding-top:18px}
+.banner{background:var(--accent-soft);border-radius:10px;padding:10px 12px;font-size:.88rem}
+.banner b{font-weight:700}
+section.block{display:flex;flex-direction:column;gap:12px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 13px;font-size:.88rem;font-weight:500}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.field{display:flex;flex-direction:column;gap:5px;min-width:0}
+input.in,.field input,.field textarea{width:100%;min-width:0;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:11px 12px;font-family:var(--mono);font-size:1rem}
+.field textarea{font-family:var(--body);min-height:76px;resize:vertical}
+.field input::placeholder,.field textarea::placeholder,input.in::placeholder{color:var(--muted);opacity:.7}
+.field.txt input{font-family:var(--body)}
+.field input[type="date"]{font-family:var(--body);min-height:46px}
+.ratio{display:flex;align-items:baseline;justify-content:space-between;background:var(--sunk);border-radius:10px;padding:10px 12px}
+.ratio .v{font-family:var(--mono);font-size:1.15rem;font-weight:600;font-variant-numeric:tabular-nums}
+.score{display:grid;grid-template-columns:repeat(10,1fr);gap:4px}
+.score button{aspect-ratio:1/1.15;max-width:100%;border:1px solid var(--line);background:var(--surface);border-radius:8px;font-family:var(--mono);font-weight:600;font-size:.95rem;padding:0}
+.score button.on{color:#fff;border-color:transparent}
+.taste{display:grid;grid-template-columns:5.2rem 1fr;align-items:center;gap:8px 10px}
+.seg{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+.seg button{height:34px;border:1px solid var(--line);background:var(--surface);border-radius:7px;font-family:var(--mono);font-size:.85rem}
+.seg button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.scale-ends{grid-column:2;display:flex;justify-content:space-between;font-size:.7rem;color:var(--muted);margin-top:-4px}
+.btn{border:0;border-radius:12px;padding:14px 16px;font-weight:700;font-size:1rem}
+.btn.primary{background:var(--accent);color:var(--accent-ink)}
+.btn.ghost{background:transparent;border:1px solid var(--line)}
+.btn.small{padding:8px 12px;font-size:.85rem;border-radius:9px;font-weight:600}
+.btn.danger{background:var(--s-low);color:#fff}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.row .btn{flex:1}
+.hint{font-size:.82rem;color:var(--muted)}
+.age{font-family:var(--mono);font-size:.85rem;color:var(--muted)}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:.9rem;font-weight:600;z-index:20;max-width:calc(100% - 32px)}
+/* vertidos */
+.pours{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:12px}
+.stepper{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.stepper .ctl{display:flex;align-items:center;gap:6px}
+.stepper button{width:40px;height:40px;border-radius:10px;border:1px solid var(--line);background:var(--bg);font-size:1.3rem;font-weight:600;line-height:1}
+.stepper button:disabled{opacity:.35;cursor:default}
+.stepper .n{font-family:var(--mono);font-size:1.3rem;font-weight:600;min-width:2ch;text-align:center}
+.ptable{display:grid;grid-template-columns:auto minmax(0,1fr) minmax(0,1fr) 3.6rem;gap:6px 8px;align-items:center}
+.ptable .h{font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600}
+.ptable .lbl{font-weight:600;font-size:.88rem;white-space:nowrap;display:flex;align-items:center;gap:6px}
+.ptable .lbl i{width:8px;height:8px;border-radius:50%;background:var(--water);flex:none}
+.ptable .lbl.bloom i{background:var(--accent)}
+.ptable input.in{padding:9px 8px;font-size:.95rem;text-align:center}
+.ptable .fixed{font-family:var(--mono);text-align:center;color:var(--muted);font-size:.95rem}
+.ptable .cum{font-family:var(--mono);font-size:.82rem;color:var(--muted);text-align:right;font-variant-numeric:tabular-nums}
+.pcheck{font-size:.84rem;display:flex;flex-direction:column;gap:8px}
+.pcheck.warn{background:var(--accent-soft);border-radius:10px;padding:10px 12px}
+.pchart{width:100%;height:auto;display:block}
+.pchart text{font-family:var(--mono);font-size:9.5px;fill:var(--muted)}
+/* historial */
+.list{display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.entry{border-bottom:1px solid var(--line)}
+.entry>button.head{all:unset;box-sizing:border-box;width:100%;display:grid;grid-template-columns:44px 1fr;gap:12px;padding:12px 0;cursor:pointer}
+.badge{width:44px;height:44px;flex:none;border-radius:10px;display:grid;place-items:center;font-family:var(--mono);font-weight:600;font-size:1.1rem;color:#fff}
+.e-title{font-weight:600;display:flex;justify-content:space-between;gap:8px;min-width:0}
+.e-title span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.e-date{font-size:.78rem;color:var(--muted);font-weight:500;white-space:nowrap}
+.recipe{font-family:var(--mono);font-size:.8rem;color:var(--muted);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.detail{padding:0 0 14px 56px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.bars{display:grid;grid-template-columns:4.6rem 1fr 1.2rem;gap:4px 8px;align-items:center;font-size:.82rem}
+.bar{height:6px;background:var(--sunk);border-radius:3px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--ink)}
+.notes{font-size:.9rem;white-space:pre-wrap}
+.empty{padding:28px 0;color:var(--muted);text-align:left}
+/* sugerencias */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.sug{display:flex;flex-direction:column}
+.sug-row{display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:10px 0;border-top:1px dashed var(--line)}
+.sug-row:first-child{border-top:0;padding-top:0}
+.sug-row .k{font-weight:600}
+.sug-row .v{font-family:var(--mono);font-size:1.15rem;font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
+.sug-row .adj{grid-column:1/-1;font-size:.78rem;color:var(--accent);font-weight:600}
+.sug-row .meta{grid-column:1/-1;font-size:.78rem;color:var(--muted);display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.conf{display:inline-flex;gap:3px;align-items:center}
+.conf i{width:6px;height:6px;border-radius:50%;background:var(--line)}
+.conf i.on{background:var(--ink)}
+.diag{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
+.diag li{padding-left:14px;position:relative;font-size:.92rem}
+.diag li::before{content:"";position:absolute;left:0;top:.55em;width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.fresh-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.fresh-age{font-family:var(--mono);font-size:1.6rem;font-weight:600;font-variant-numeric:tabular-nums}
+.pill{display:inline-block;border-radius:999px;padding:3px 10px;font-size:.78rem;font-weight:700;color:#fff}
+.switch{display:flex;align-items:center;gap:10px;font-size:.9rem;font-weight:500}
+.switch input{width:20px;height:20px;accent-color:var(--accent)}
+.infl{display:grid;grid-template-columns:7rem 1fr;gap:6px 10px;align-items:center;font-size:.85rem}
+.infl .bar{height:8px}
+.infl .bar i{background:var(--accent)}
+.infl small{grid-column:2;color:var(--muted);font-size:.75rem;margin-top:-3px}
+.chart{width:100%;height:auto;display:block}
+.chart text{font-family:var(--mono);font-size:10px;fill:var(--muted)}
+/* tabs */
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:8;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
+nav.tabs .in{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr)}
+nav.tabs button{border:0;background:none;padding:10px 4px 12px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:.75rem;font-weight:600;color:var(--muted)}
+nav.tabs button svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+nav.tabs button[aria-current="page"]{color:var(--accent)}
+@media (max-width:370px){.ptable{grid-template-columns:auto minmax(0,1fr) minmax(0,1fr)}.ptable .cum,.ptable .h.c{display:none}}
+@media (prefers-reduced-motion:no-preference){.entry .detail{animation:fade .18s ease}@keyframes fade{from{opacity:.4}to{opacity:1}}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <h1>Bitácora de Café</h1>
+    <div class="hdr"><button class="sync" id="sync">Cargando…</button><button class="gear" id="gear" aria-label="Ajustes y sincronización" aria-pressed="false"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button></div>
+  </header>
+  <main id="app"></main>
+</div>
+<nav class="tabs" aria-label="Secciones">
+  <div class="in">
+    <button id="tab-new" data-tab="new"><svg viewBox="0 0 24 24"><path d="M5 9h11v5a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5z"/><path d="M16 10h1.5a2.5 2.5 0 0 1 0 5H16"/><path d="M9 3c-.6 1 .6 2 0 3M12.5 3c-.6 1 .6 2 0 3"/></svg>Registrar</button>
+    <button id="tab-hist" data-tab="hist"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M8.5 8.5h7M8.5 12h7M8.5 15.5h4"/></svg>Historial</button>
+    <button id="tab-sug" data-tab="sug"><svg viewBox="0 0 24 24"><path d="M4 19h16"/><path d="M6 15l4-5 3 3 5-7"/><circle cx="18" cy="6" r="1.2"/></svg>Sugerencias</button>
+  </div>
+</nav>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+(function(){
+const METHODS=["V60","Espresso","AeroPress","Otro"];
+const ROASTS=["Claro","Medio","Oscuro"];
+const TASTE=[["acid","Acidez","apagada","intensa"],["sweet","Dulzor","nada","mucho"],["bitter","Amargor","nada","mucho"],["body","Cuerpo","ligero","denso"]];
+const LS_KEY="bitacora-cafe-v1";
+const DAY=864e5;
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const num=v=>{if(v===""||v==null)return null;const n=parseFloat(String(v).replace(",","."));return isFinite(n)?n:null};
+const fmtTime=s=>{if(s==null)return"–";s=Math.round(s);return Math.floor(s/60)+":"+String(s%60).padStart(2,"0")};
+const parseTime=t=>{if(t==null||t==="")return null;t=String(t).trim();if(t.includes(":")){const[m,s]=t.split(":");const mm=num(m),ss=num(s);return mm==null?null:mm*60+(ss||0)}return num(t)};
+const r1=v=>Math.round(v*10)/10;
+const scoreColor=s=>s>=9?"var(--s-top)":s>=7?"var(--s-good)":s>=5?"var(--s-mid)":"var(--s-low)";
+const fmtDate=ts=>{const d=new Date(ts);return d.toLocaleDateString("es-ES",{day:"numeric",month:"short"})+" · "+d.toLocaleTimeString("es-ES",{hour:"2-digit",minute:"2-digit"})};
+const todayISO=()=>{const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")};
+const isoMinusDays=(ts,d)=>{const x=new Date(ts-d*DAY);return x.getFullYear()+"-"+String(x.getMonth()+1).padStart(2,"0")+"-"+String(x.getDate()).padStart(2,"0")};
+const daysSince=(iso,ts)=>{if(!iso)return null;const t=Date.parse(iso+"T12:00:00");if(!isFinite(t))return null;return Math.max(0,Math.round((ts-t)/DAY))};
+const ageOf=b=>b.roastDate?daysSince(b.roastDate,b.ts):num(b.roastDays);
+const poursOf=b=>Array.isArray(b.pours)&&b.pours.length>1?b.pours:null;
+
+/* MiCoffee DF54: dial continuo 0–90, número menor = más fino */
+const DF54_STEP={Espresso:1,V60:2,AeroPress:4,Otro:2};
+const DF54_START={Espresso:{Claro:17,Medio:19,Oscuro:24,range:"13–30"},V60:{Claro:59,Medio:61,Oscuro:64,range:"55–66"},AeroPress:{Claro:43,Medio:51,Oscuro:55,range:"30–59"}};
+const gstep=m=>DF54_STEP[m]||2;
+const df54=(n,m)=>{const v=Math.abs(n)*gstep(m);return (n<0?"cierra ":"abre ")+v+(v===1?" número":" números")+" (más "+(n<0?"fino":"grueso")+")"};
+const PARAMS=[
+ {k:"ratio",label:"Ratio",get:b=>b.dose&&b.water?b.water/b.dose:null,fmt:v=>"1:"+v.toFixed(1),hi:"más agua por gramo",lo:"más concentrado"},
+ {k:"grind",label:"Molienda DF54",get:b=>num(b.grind),fmt:v=>String(Math.round(v*2)/2),hi:"más grueso",lo:"más fino",unit:"DF54"},
+ {k:"temp",label:"Temperatura",get:b=>b.method==="Espresso"?null:num(b.temp),fmt:v=>Math.round(v)+" °C",hi:"más caliente",lo:"más fría"},
+ {k:"time",label:"Tiempo",get:b=>num(b.time),fmt:fmtTime,hi:"más largo",lo:"más corto"},
+ {k:"dose",label:"Dosis",get:b=>num(b.dose),fmt:v=>r1(v)+" g",hi:"más café",lo:"menos café"},
+ {k:"pours",label:"Vertidos",get:b=>poursOf(b)?b.pours.length-1:null,fmt:v=>String(Math.round(v))+" + bloom",hi:"más vertidos",lo:"menos vertidos"},
+ {k:"bloom",label:"Bloom",get:b=>num(b.bloom),fmt:v=>Math.round(v)+" s",hi:"bloom más largo",lo:"bloom más corto"},
+ {k:"bloomMult",label:"Agua de bloom",get:b=>{const p=poursOf(b);return p&&b.dose?p[0].g/b.dose:null},fmt:v=>"×"+v.toFixed(1)+" la dosis",hi:"más agua en bloom",lo:"menos agua en bloom"},
+ {k:"age",label:"Días de tueste",get:ageOf,fmt:v=>Math.round(v)+" días",hi:"café más reposado",lo:"café más fresco",info:true},
+];
+
+/* ---------- frescura ---------- */
+function freshness(age,roast,method){
+  if(age==null)return null;
+  const esp=method==="Espresso";const G=n=>"En el DF54, "+df54(n,method);
+  let f;
+  if(esp){
+    if(age<7)f={tag:"Recién tostado",color:"var(--s-mid)",adj:{grind:+1},tips:["Con tan poco reposo el CO₂ hace la crema inestable y el shot sale ácido o con canalizaciones.",G(1)+" o, mejor, espera a que tenga 7–10 días."]};
+    else if(age<=30)f={tag:"En su punto",color:"var(--s-top)",adj:{},tips:["Ventana óptima para espresso. No hace falta compensar."]};
+    else if(age<=50)f={tag:"Empieza a perder aroma",color:"var(--s-good)",adj:{grind:-1},tips:["El café fluye más rápido. "+G(-1)+" para mantener el tiempo hasta parar."]};
+    else f={tag:"Café antiguo",color:"var(--s-low)",adj:{grind:-2,ratio:-.2},tips:[G(-2)+" para frenar el caudal.","Ratio algo más corto para ganar cuerpo y sabor."]};
+    f.tips.push("Como la Bambino fija temperatura y presión, la compensación se hace solo con molienda y ratio.");
+    return f;
+  }
+  if(age<4)f={tag:"Recién tostado",color:"var(--s-mid)",adj:{bloom:+15,bloomMult:3},
+    tips:["Desgasifica mucho: alarga el bloom y usa algo más de agua en él (×3 la dosis).","Lo ideal es dejarlo reposar hasta el día 5–7."]};
+  else if(age<=21)f={tag:"En su punto",color:"var(--s-top)",adj:{},tips:["Ventana óptima de frescura. No hace falta compensar."]};
+  else if(age<=45)f={tag:"Empieza a perder aroma",color:"var(--s-good)",adj:{temp:+1,grind:-1,bloom:-10},
+    tips:["Sube 1 °C. "+G(-1)+" para extraer lo que queda de dulzor.","El bloom puede ser más corto: apenas hay CO₂."]};
+  else f={tag:"Café antiguo",color:"var(--s-low)",adj:{temp:+2,grind:-2,bloom:-15,ratio:-.5},
+    tips:["Sube 2 °C. "+G(-2)+".","Ratio algo más corto (menos agua por gramo) para compensar la pérdida de sabor.","Bloom corto: unos 30 s bastan."]};
+  if(roast==="Oscuro")f.tips.push("Al ser tueste oscuro, no pases de 92 °C aunque subas la temperatura.");
+  if(roast==="Claro")f.tips.push("Al ser tueste claro, quédate por encima de 92 °C.");
+  f.cap=roast==="Oscuro"?92:null;f.floor=roast==="Claro"?92:null;
+  return f;
+}
+
+/* ---------- datos de ejemplo (no se guardan) ---------- */
+function makeDemo(){
+  let seed=11;const rnd=()=>{seed=(seed*16807)%2147483647;return(seed-1)/2147483646};
+  const out=[];const now=Date.now();const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+  for(let i=0;i<18;i++){
+    const ts=now-(18-i)*DAY*1.6;const coffee=i<10?"Etiopía Guji":"Colombia Huila";
+    const roastTs=i<10?now-30*DAY:now-14*DAY;const age=Math.round((ts-roastTs)/DAY)+6;
+    const ratio=14.8+rnd()*2.8,grind=55+Math.round(rnd()*10),temp=90+Math.round(rnd()*6),dose=15,n=2+Math.round(rnd()*3),bloom=30+Math.round(rnd()*4)*5;
+    const water=Math.round(dose*ratio),bG=Math.round(dose*(2+rnd())/5)*5,time=bloom+(n-1)*35+75;
+    let s=9-.55*(ratio-16.2)**2-.03*(grind-60)**2-.08*(temp-94)**2-.25*(n-3)**2-(age>30?(age-30)*.05:0)+(rnd()-.5)*.7;
+    const rows=[{t:0,g:bG}];const rest=water-bG,per=Math.round(rest/n);for(let k=0;k<n;k++)rows.push({t:bloom+k*35,g:k<n-1?per:rest-per*(n-1)});
+    out.push({id:"demo"+i,demo:true,ts,method:"V60",coffee,roast:"Claro",roastDate:isoMinusDays(ts,age),dose,water,grind,temp,time,bloom,pours:rows,score:clamp(Math.round(s),1,10),
+      acid:clamp(Math.round(3+(grind-60)*.15+(94-temp)*.25),1,5),sweet:clamp(Math.round(s/2),1,5),bitter:clamp(Math.round(2.5-(grind-60)*.15),1,5),body:3,notes:i===17?"Muy limpio, notas a melocotón.":""});
+  }
+  for(let i=0;i<6;i++){
+    const ts=now-(6-i)*DAY*2.1-5*3600000;const ratio=1.8+rnd()*.8,temp=null,time=24+Math.round(rnd()*10),grind=15+Math.round(rnd()*6);
+    const s=8.4-6*(ratio-2.2)**2-.04*(time-28)**2-.15*(grind-18)**2+(rnd()-.5);
+    out.push({id:"demoE"+i,demo:true,ts,method:"Espresso",coffee:"Brasil Cerrado",roast:"Medio",roastDate:isoMinusDays(ts,9+i*2),dose:18,water:Math.round(18*ratio),stopW:Math.round(18*ratio)-3-Math.round(rnd()*2),grind,temp,time,bloom:5,score:clamp(Math.round(s),1,10),acid:2,sweet:3,bitter:3,body:4,notes:""});
+  }
+  return out;
+}
+const DEMO=makeDemo();
+
+/* ---------- almacenamiento: local primero, Google Drive como nube ---------- */
+const CLIENT_ID=(window.BITACORA_CONFIG&&window.BITACORA_CONFIG.googleClientId)||"";
+const FILE_NAME="bitacora-cafe.json";
+const LS_DATA="bitacora-cafe-v2",LS_OLD="bitacora-cafe-v1",LS_DRIVE="bitacora-cafe-drive";
+const SCOPE="https://www.googleapis.com/auth/drive.file";
+const store={ready:true,real:[],deleted:{}};
+function loadLocal(){
+  try{const r=JSON.parse(localStorage.getItem(LS_DATA)||"null");if(r&&Array.isArray(r.brews)){store.real=r.brews;store.deleted=r.deleted||{};return}
+    const old=JSON.parse(localStorage.getItem(LS_OLD)||"[]");if(Array.isArray(old))store.real=old}catch(e){}
+}
+function saveLocal(){try{localStorage.setItem(LS_DATA,JSON.stringify({brews:store.real,deleted:store.deleted}))}catch(e){}}
+const stamp=b=>b.updatedAt||b.ts||0;
+function mergeData(a,b){
+  const del=Object.assign({},a.deleted||{});Object.entries(b.deleted||{}).forEach(([k,v])=>{if(!del[k]||del[k]<v)del[k]=v});
+  const map=new Map();[...(a.brews||[]),...(b.brews||[])].forEach(x=>{if(!x||!x.id)return;const c=map.get(x.id);if(!c||stamp(x)>stamp(c))map.set(x.id,x)});
+  const brews=[...map.values()].filter(x=>!(del[x.id]&&del[x.id]>=stamp(x)));
+  const cut=Date.now()-365*DAY;Object.keys(del).forEach(k=>{if(del[k]<cut)delete del[k]});
+  return{brews,deleted:del};
+}
+const sig=d=>JSON.stringify([(d.brews||[]).map(b=>b.id+":"+stamp(b)).sort(),Object.keys(d.deleted||{}).sort()]);
+async function saveBrew(b){
+  b.updatedAt=Date.now();const i=store.real.findIndex(x=>x.id===b.id);if(i>=0)store.real[i]=b;else store.real.push(b);
+  saveLocal();render();drive.schedule();
+}
+async function deleteBrew(id){
+  store.real=store.real.filter(x=>x.id!==id);store.deleted[id]=Date.now();saveLocal();render();drive.schedule();
+}
+
+/* Google Drive: un archivo JSON visible en tu Drive, permiso drive.file (solo ve lo que crea esta app) */
+const drive={token:null,exp:0,fileId:null,state:"off",last:null,busy:false,again:false,client:null,timer:null,
+  schedule(){clearTimeout(this.timer);this.timer=setTimeout(()=>sync(),1200)}};
+function dcfg(){try{return JSON.parse(localStorage.getItem(LS_DRIVE)||"{}")}catch(e){return{}}}
+function dsave(o){try{localStorage.setItem(LS_DRIVE,JSON.stringify(Object.assign(dcfg(),o)))}catch(e){}}
+const hhmm=ts=>new Date(ts).toLocaleTimeString("es-ES",{hour:"2-digit",minute:"2-digit"});
+function setDrive(state){
+  drive.state=state;const el=$("#sync");el.className="sync";
+  const T={off:["Conectar Drive","act"],expired:["Sincronizar","act"],syncing:["Sincronizando…",""],ok:["Drive · "+(drive.last?hhmm(drive.last):""),""],
+    offline:["Sin conexión","warn"],error:["Error · reintentar","warn"],noconfig:["Solo en este móvil",""]};
+  const[t,c]=T[state]||T.off;el.textContent=t;if(c)el.classList.add(c);
+  if(ui.tab==="cfg")render();
+}
+const tokenValid=()=>drive.token&&Date.now()<drive.exp;
+function gisReady(){return window.google&&google.accounts&&google.accounts.oauth2}
+function connectDrive(){
+  if(!CLIENT_ID){toast("Falta el ID de cliente de Google en config.js");return}
+  if(!gisReady()){toast("Cargando Google… prueba de nuevo en unos segundos");return}
+  if(!drive.client)drive.client=google.accounts.oauth2.initTokenClient({client_id:CLIENT_ID,scope:SCOPE,
+    callback:r=>{if(r.error){setDrive(dcfg().connected?"expired":"off");toast("No se pudo conectar con Google");return}
+      if(google.accounts.oauth2.hasGrantedAllScopes&&!google.accounts.oauth2.hasGrantedAllScopes(r,SCOPE)){setDrive("off");toast("Hace falta permitir el acceso a Drive para sincronizar");return}
+      drive.token=r.access_token;drive.exp=Date.now()+((+r.expires_in||3600)-120)*1000;dsave({connected:true,token:drive.token,exp:drive.exp});sync()},
+    error_callback:()=>setDrive(dcfg().connected?"expired":"off")});
+  drive.client.requestAccessToken({prompt:dcfg().connected?"":"consent"});
+}
+function disconnectDrive(){
+  try{if(drive.token&&gisReady())google.accounts.oauth2.revoke(drive.token,()=>{})}catch(e){}
+  drive.token=null;drive.exp=0;drive.fileId=null;drive.last=null;dsave({connected:false,token:null,exp:0,fileId:null,last:null});setDrive("off");toast("Drive desconectado. Tus datos siguen en este móvil y en tu Drive");
+}
+async function api(url,opt){
+  opt=opt||{};const r=await fetch(url,Object.assign({},opt,{headers:Object.assign({Authorization:"Bearer "+drive.token},opt.headers||{})}));
+  if(r.status===401){drive.token=null;dsave({token:null,exp:0});throw{code:"auth"}}
+  if(!r.ok)throw{code:"http",status:r.status};
+  return r;
+}
+async function findFile(){
+  const q=encodeURIComponent(`name='${FILE_NAME}' and trashed=false`);
+  const j=await (await api(`https://www.googleapis.com/drive/v3/files?q=${q}&spaces=drive&orderBy=modifiedTime%20desc&fields=files(id)`)).json();
+  return j.files&&j.files[0]?j.files[0].id:null;
+}
+async function sync(){
+  if(!CLIENT_ID){setDrive("noconfig");return}
+  if(!tokenValid()){setDrive(dcfg().connected?"expired":"off");return}
+  if(drive.busy){drive.again=true;return}
+  drive.busy=true;setDrive("syncing");
+  try{
+    if(!drive.fileId)drive.fileId=dcfg().fileId||await findFile();
+    let remote={brews:[],deleted:{}};
+    if(drive.fileId){
+      try{remote=await (await api(`https://www.googleapis.com/drive/v3/files/${drive.fileId}?alt=media`)).json()}
+      catch(e){if(e.code==="http"&&e.status===404){drive.fileId=await findFile();if(drive.fileId)remote=await (await api(`https://www.googleapis.com/drive/v3/files/${drive.fileId}?alt=media`)).json()}else throw e}
+    }
+    if(!remote||!Array.isArray(remote.brews))remote={brews:[],deleted:{}};
+    const local={brews:store.real,deleted:store.deleted};
+    const merged=mergeData(local,remote);
+    const body=JSON.stringify({app:"Bitácora de Café",formato:2,actualizado:new Date().toISOString(),brews:merged.brews,deleted:merged.deleted});
+    if(!drive.fileId){
+      const b="bc"+Date.now().toString(36);
+      const mp=`--${b}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify({name:FILE_NAME,mimeType:"application/json",description:"Datos de Bitácora de Café. No lo borres: es tu historial."})}\r\n--${b}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${body}\r\n--${b}--`;
+      const j=await (await api("https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id",{method:"POST",headers:{"Content-Type":"multipart/related; boundary="+b},body:mp})).json();
+      drive.fileId=j.id;
+    }else if(sig(merged)!==sig(remote)){
+      await api(`https://www.googleapis.com/upload/drive/v3/files/${drive.fileId}?uploadType=media`,{method:"PATCH",headers:{"Content-Type":"application/json; charset=UTF-8"},body});
+    }
+    const changed=sig(merged)!==sig(local);
+    store.real=merged.brews;store.deleted=merged.deleted;saveLocal();
+    drive.last=Date.now();dsave({fileId:drive.fileId,last:drive.last});setDrive("ok");
+    if(changed&&ui.tab!=="new")render();
+  }catch(e){
+    if(e&&e.code==="auth")setDrive("expired");else setDrive(navigator.onLine===false?"offline":"error");
+  }finally{drive.busy=false;if(drive.again){drive.again=false;sync()}}
+}
+function initDrive(){
+  const c=dcfg();drive.fileId=c.fileId||null;drive.last=c.last||null;
+  if(!CLIENT_ID){setDrive("noconfig");return}
+  if(c.token&&c.exp>Date.now()){drive.token=c.token;drive.exp=c.exp;sync()}
+  else setDrive(c.connected?"expired":"off");
+}
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&tokenValid())sync()});
+window.addEventListener("online",()=>{if(tokenValid())sync()});
+
+/* ---------- copias e importación ---------- */
+function downloadFile(name,data,type){
+  const url=URL.createObjectURL(new Blob([data],{type}));const a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();
+  setTimeout(()=>{URL.revokeObjectURL(url);a.remove()},1000);
+}
+function parseCSV(text){
+  const rows=[];let row=[],f="",q=false;text=text.replace(/^\ufeff/,"");
+  for(let i=0;i<text.length;i++){const c=text[i];
+    if(q){if(c==='"'){if(text[i+1]==='"'){f+='"';i++}else q=false}else f+=c}
+    else if(c==='"')q=true;else if(c===","){row.push(f);f=""}else if(c==="\n"||c==="\r"){if(c==="\r"&&text[i+1]==="\n")i++;row.push(f);rows.push(row);row=[];f=""}else f+=c}
+  if(f!==""||row.length){row.push(f);rows.push(row)}
+  return rows.filter(r=>r.some(x=>x!==""));
+}
+function hashId(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return "imp"+(h>>>0).toString(36)}
+function parsePourPlan(s){
+  if(!s)return null;const parts=s.split("→").map(x=>x.trim());const out=[];
+  for(const p of parts){let m=p.match(/^Bloom\s+([\d.,]+)\s*g/i);if(m){out.push({t:0,g:num(m[1])});continue}
+    m=p.match(/^(\d+:\d{2})\s+([\d.,]+)\s*g/);if(m)out.push({t:parseTime(m[1]),g:num(m[2])});else return null}
+  return out.length>1?out:null;
+}
+function brewsFromCSV(text){
+  const rows=parseCSV(text);if(rows.length<2)return[];
+  const H=rows[0].map(h=>h.trim().toLowerCase());const col=(r,...names)=>{for(const n of names){const i=H.indexOf(n);if(i>=0&&r[i]!=null&&r[i]!=="")return r[i]}return""};
+  const n=v=>num(v),i=v=>{const x=num(v);return x==null?null:Math.round(x)};
+  return rows.slice(1).map(r=>{
+    const fecha=col(r,"fecha");const ts=Date.parse(fecha);if(!isFinite(ts))return null;
+    const method=col(r,"metodo")||"Otro";const score=i(col(r,"nota"));if(score==null)return null;
+    let roastDate=col(r,"fecha_tueste");const dias=n(col(r,"dias_tueste"));if(!roastDate&&dias!=null)roastDate=isoMinusDays(ts,dias);
+    const pours=parsePourPlan(col(r,"plan_vertidos"));
+    return{id:hashId(fecha+"|"+method+"|"+col(r,"cafe")),ts,updatedAt:ts,method,coffee:col(r,"cafe"),roast:col(r,"tueste"),roastDate:roastDate||"",
+      dose:n(col(r,"dosis_g")),water:n(col(r,"agua_g")),grind:n(col(r,"molienda_df54","molienda")),temp:method==="Espresso"?null:n(col(r,"temp_c")),
+      time:n(col(r,"tiempo_s")),stopW:n(col(r,"peso_al_parar_g")),bloom:n(col(r,"bloom_s")),pours,score,
+      acid:i(col(r,"acidez")),sweet:i(col(r,"dulzor")),bitter:i(col(r,"amargor")),body:i(col(r,"cuerpo")),notes:col(r,"notas")};
+  }).filter(Boolean);
+}
+async function importFile(file){
+  const text=await file.text();let incoming=null;
+  try{if(/\.json$/i.test(file.name)||text.trim().startsWith("{")){const j=JSON.parse(text);incoming={brews:Array.isArray(j.brews)?j.brews:[],deleted:j.deleted||{}}}
+    else incoming={brews:brewsFromCSV(text),deleted:{}}}catch(e){incoming=null}
+  if(!incoming||!incoming.brews.length){toast("No he encontrado preparaciones en ese archivo");return}
+  const before=new Set(store.real.map(b=>b.id));
+  const merged=mergeData({brews:store.real,deleted:store.deleted},incoming);
+  store.real=merged.brews;store.deleted=merged.deleted;saveLocal();
+  const added=store.real.filter(b=>!before.has(b.id)).length;
+  ui.form=blankForm(ui.form.method);render();drive.schedule();
+  toast(added?`Importadas ${added} preparaciones`:"No había preparaciones nuevas");
+}
+const newId=()=>"b"+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const isDemo=()=>store.ready&&store.real.length===0;
+const brews=()=>(isDemo()?DEMO:store.real).slice().sort((a,b)=>b.ts-a.ts);
+const methodsIn=list=>[...METHODS,...new Set(list.map(b=>b.method).filter(m=>!METHODS.includes(m)))].filter(m=>list.some(b=>b.method===m));
+
+/* ---------- formulario y vertidos ---------- */
+const ui={tab:"new",histFilter:"Todos",sugMethod:null,chartParam:"ratio",expanded:null,confirmDel:null,editingId:null,form:null,freshCoffee:null,applyFresh:true};
+function pvFrom(pours){return{auto:false,mult:null,bloomG:String(pours[0].g),rows:pours.slice(1).map(p=>({t:fmtTime(p.t),g:String(p.g)}))}}
+function defaultPv(f,n){const pv={auto:true,mult:2.5,bloomG:"",rows:Array.from({length:n||3},()=>({t:"",g:""})),bT:40};f.pv=pv;distribute(f);return pv}
+function distribute(f){
+  const pv=f.pv;const n=pv.rows.length||1;
+  const dose=num(f.dose)||15;const W=num(f.water)||Math.round(dose*16);
+  let bG=Math.round(dose*(pv.mult||2.5)/5)*5;if(bG>=W)bG=Math.round(W*.15);
+  const bT=parseTime(pv.rows[0]&&pv.rows[0].t)||pv.bT||40;
+  const T=parseTime(f.time)||(bT+150);
+  const iv=n>1?Math.max(15,Math.round((T-60-bT)/(n-1)/5)*5):0;
+  const rest=W-bG,per=Math.round(rest/n);
+  pv.bloomG=String(bG);
+  pv.rows=Array.from({length:n},(_,i)=>({t:fmtTime(bT+i*iv),g:String(i<n-1?per:rest-per*(n-1))}));
+}
+function pvToPours(pv){
+  const rows=[{t:0,g:num(pv.bloomG)||0},...pv.rows.map(r=>({t:parseTime(r.t),g:num(r.g)}))];
+  return rows.every(r=>r.t!=null&&r.g!=null)?rows:null;
+}
+function blankForm(method){
+  const last=store.real.filter(b=>b.method===method).sort((a,b)=>b.ts-a.ts)[0];
+  const f={method,coffee:"",roast:"",roastDate:"",dose:"",water:"",grind:"",temp:"",time:"",bloom:"",score:null,acid:null,sweet:null,bitter:null,body:null,notes:"",pv:null};
+  if(last){["coffee","roast","roastDate","dose","water","grind","temp","bloom"].forEach(k=>f[k]=last[k]??"");f.time=last.time!=null?fmtTime(last.time):""}
+  if(method==="V60"){if(last&&poursOf(last))f.pv=pvFrom(last.pours);else defaultPv(f,3)}
+  return f;
+}
+function formFrom(b){
+  const f=Object.assign({},b);f.time=b.time!=null?fmtTime(b.time):"";
+  ["dose","water","grind","temp","bloom","roastDate","roast","coffee","stopW"].forEach(k=>f[k]=b[k]??"");
+  f.pv=null;if(b.method==="V60"){if(poursOf(b))f.pv=pvFrom(b.pours);else defaultPv(f,3)}
+  return f;
+}
+ui.form=blankForm("V60");
+
+function toast(msg){const t=$("#toast");t.textContent=msg;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>t.hidden=true,2200)}
+
+/* gráfico escalonado de vertidos */
+function pourChart(pours,T,opts){
+  opts=opts||{};const W=340,H=opts.h||130,L=34,R=10,Tp=10,B=22;
+  const tot=pours.reduce((a,p)=>a+(p.g||0),0)||1;
+  const last=pours[pours.length-1].t||0;const tMax=Math.max(T||0,last+45,60);
+  const sx=t=>L+t/tMax*(W-L-R),sy=g=>Tp+(1-g/tot)*(H-Tp-B);
+  let d=`M${sx(0)} ${sy(0)}`,cum=0,marks="";
+  pours.forEach((p,i)=>{
+    const next=i<pours.length-1?pours[i+1].t:null;
+    const dur=Math.max(4,Math.min(next!=null?(next-p.t)*.6:20,Math.max(6,(p.g||0)/6)));
+    d+=` L${sx(p.t).toFixed(1)} ${sy(cum).toFixed(1)}`;cum+=p.g||0;d+=` L${sx(p.t+dur).toFixed(1)} ${sy(cum).toFixed(1)}`;
+    marks+=`<circle cx="${sx(p.t).toFixed(1)}" cy="${sy(cum-(p.g||0)).toFixed(1)}" r="3.5" fill="${i===0?"var(--accent)":"var(--water)"}"/>`;
+    if(!opts.mini)marks+=`<text x="${sx(p.t).toFixed(1)}" y="${H-8}" text-anchor="middle">${fmtTime(p.t)}</text>`;
+  });
+  d+=` L${sx(tMax).toFixed(1)} ${sy(cum).toFixed(1)}`;
+  const area=d+` L${sx(tMax).toFixed(1)} ${sy(0)} Z`;
+  let grid="";[0,.5,1].forEach(f=>{const g=Math.round(tot*f);grid+=`<line x1="${L}" x2="${W-R}" y1="${sy(g)}" y2="${sy(g)}" stroke="var(--line)"/><text x="${L-5}" y="${sy(g)+3}" text-anchor="end">${g}</text>`});
+  const end=T?`<line x1="${sx(T)}" x2="${sx(T)}" y1="${Tp}" y2="${H-B}" stroke="var(--muted)" stroke-dasharray="3 3"/><text x="${sx(T)-3}" y="${Tp+8}" text-anchor="end">fin ${fmtTime(T)}</text>`:"";
+  return `<svg class="pchart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Agua acumulada por vertido">${grid}<path d="${area}" fill="var(--water)" fill-opacity=".12"/><path d="${d}" fill="none" stroke="var(--water)" stroke-width="2" stroke-linejoin="round"/>${end}${marks}</svg>`;
+}
+function poursTableHTML(f){
+  const pv=f.pv;let cum=num(pv.bloomG)||0;
+  let h=`<div class="ptable"><span class="h"></span><span class="h" style="text-align:center">Inicio</span><span class="h" style="text-align:center">Agua (g)</span><span class="h c" style="text-align:right">Total</span>
+  <span class="lbl bloom"><i></i>Bloom</span><span class="fixed">0:00</span><input class="in" id="p-bg" data-pf="bloomG" inputmode="decimal" value="${esc(pv.bloomG)}" aria-label="Agua del bloom en gramos"><span class="cum" id="cum-b">${cum} g</span>`;
+  pv.rows.forEach((r,i)=>{cum+=num(r.g)||0;h+=`<span class="lbl"><i></i>${i+1}º</span><input class="in" id="p-t-${i}" data-pf="t" data-i="${i}" inputmode="decimal" placeholder="m:ss" value="${esc(r.t)}" aria-label="Inicio del vertido ${i+1}"><input class="in" id="p-g-${i}" data-pf="g" data-i="${i}" inputmode="decimal" value="${esc(r.g)}" aria-label="Agua del vertido ${i+1} en gramos"><span class="cum" id="cum-${i}">${cum} g</span>`});
+  return h+`</div>`;
+}
+function poursMetaHTML(f){
+  const pv=f.pv;const pours=pvToPours(pv);const W=num(f.water);
+  const sum=(num(pv.bloomG)||0)+pv.rows.reduce((a,r)=>a+(num(r.g)||0),0);
+  let order=true;if(pours)for(let i=1;i<pours.length;i++)if(pours[i].t<=pours[i-1].t)order=false;
+  let check="";
+  if(!pours)check=`<div class="pcheck warn">Completa el inicio y el agua de cada vertido.</div>`;
+  else if(!order)check=`<div class="pcheck warn">Los tiempos de inicio deben ir en aumento.</div>`;
+  else if(W&&Math.abs(sum-W)>=1)check=`<div class="pcheck warn"><span>Los vertidos suman <b>${sum} g</b> y el agua total es <b>${W} g</b>.</span><div class="row"><button class="btn ghost small" data-act="pv-usesum">Usar ${sum} g como total</button><button class="btn ghost small" data-act="pv-redo">Repartir ${W} g</button></div></div>`;
+  else if(!pv.auto)check=`<div class="pcheck row" style="justify-content:space-between"><span class="hint">Reparto editado a mano.</span><button class="btn ghost small" style="flex:0 0 auto" data-act="pv-redo">Repartir de nuevo</button></div>`;
+  else check=`<div class="hint">Reparto automático: se ajusta al cambiar dosis, agua o tiempo. El inicio del 1º vertido marca el final del bloom.</div>`;
+  return (pours&&order?pourChart(pours,parseTime(f.time)):"")+check;
+}
+function refreshPours(full){
+  const f=ui.form;if(!f.pv)return;
+  if(full){const t=$("#pours-table");if(t)t.innerHTML=poursTableHTML(f)}
+  else{let cum=num(f.pv.bloomG)||0;const cb=$("#cum-b");if(cb)cb.textContent=cum+" g";f.pv.rows.forEach((r,i)=>{cum+=num(r.g)||0;const c=$("#cum-"+i);if(c)c.textContent=cum+" g"})}
+  const m=$("#pours-meta");if(m)m.innerHTML=poursMetaHTML(f);
+}
+
+/* ---------- análisis ---------- */
+function pearson(xs,ys){const n=xs.length;if(n<3)return 0;const mx=xs.reduce((a,b)=>a+b)/n,my=ys.reduce((a,b)=>a+b)/n;let sxy=0,sxx=0,syy=0;for(let i=0;i<n;i++){sxy+=(xs[i]-mx)*(ys[i]-my);sxx+=(xs[i]-mx)**2;syy+=(ys[i]-my)**2}return sxx&&syy?sxy/Math.sqrt(sxx*syy):0}
+function quadFit(xs,ys){
+  const n=xs.length;const m=xs.reduce((a,b)=>a+b)/n;const X=xs.map(x=>x-m);
+  let S=[0,0,0,0,0],T=[0,0,0];
+  for(let i=0;i<n;i++){let p=1;for(let k=0;k<5;k++){S[k]+=p;p*=X[i]}T[0]+=ys[i];T[1]+=ys[i]*X[i];T[2]+=ys[i]*X[i]*X[i]}
+  const A=[[S[0],S[1],S[2],T[0]],[S[1],S[2],S[3],T[1]],[S[2],S[3],S[4],T[2]]];
+  for(let c=0;c<3;c++){let p=c;for(let r=c+1;r<3;r++)if(Math.abs(A[r][c])>Math.abs(A[p][c]))p=r;[A[c],A[p]]=[A[p],A[c]];if(Math.abs(A[c][c])<1e-9)return null;for(let r=0;r<3;r++)if(r!==c){const f=A[r][c]/A[c][c];for(let k=c;k<4;k++)A[r][k]-=f*A[c][k]}}
+  const c0=A[0][3]/A[0][0],c1=A[1][3]/A[1][1],c2=A[2][3]/A[2][2];
+  return{a:c2,f:x=>c0+c1*(x-m)+c2*(x-m)**2,vertex:c2<0?m-c1/(2*c2):null};
+}
+function analyze(list){
+  const out={n:list.length,params:{},infl:[]};
+  const smax=Math.max(...list.map(b=>b.score));
+  PARAMS.forEach(p=>{
+    const pts=list.map(b=>({x:p.get(b),y:b.score})).filter(o=>o.x!=null&&o.y!=null);
+    if(pts.length<2){out.params[p.k]=null;return}
+    const xs=pts.map(o=>o.x),ys=pts.map(o=>o.y);
+    const min=Math.min(...xs),max=Math.max(...xs),range=max-min;
+    let ws=0,wx=0;pts.forEach(o=>{const w=Math.exp((o.y-smax)/1.2);ws+=w;wx+=w*o.x});
+    let est=wx/ws,how="media de tus mejores tazas",fit=null;
+    const distinct=new Set(xs.map(x=>r1(x))).size;
+    if(pts.length>=6&&distinct>=3&&range>0){fit=quadFit(xs,ys);if(fit&&fit.vertex!=null&&fit.vertex>=min-range*.1&&fit.vertex<=max+range*.1){est=(fit.vertex+est)/2;how="curva de tus valoraciones"}else fit=fit&&fit.a<0?fit:null}
+    const good=pts.filter(o=>o.y>=smax-1).map(o=>o.x);
+    const conf=pts.length>=12&&range>0?3:pts.length>=5&&range>0?2:1;
+    out.params[p.k]={est,how,lo:Math.min(...good),hi:Math.max(...good),n:pts.length,conf,pts,fit,min,max,smax};
+    if(pts.length>=5&&range>0)out.infl.push({p,r:pearson(xs,ys)});
+  });
+  out.infl.sort((a,b)=>Math.abs(b.r)-Math.abs(a.r));
+  out.best=list.slice().sort((a,b)=>b.score-a.score||b.ts-a.ts)[0];
+  return out;
+}
+/* receta sugerida, con ajuste por frescura opcional */
+function suggestion(method,list,fr){
+  const an=analyze(list);const P=an.params;const rec={};
+  PARAMS.forEach(p=>{if(!p.info&&P[p.k])rec[p.k]=P[p.k].est});
+  if(method!=="V60"){delete rec.pours;delete rec.bloomMult}
+  const notes={};
+  if(fr){const a=fr.adj;
+    if(a.temp&&rec.temp!=null){rec.temp+=a.temp;notes.temp=(a.temp>0?"+":"")+a.temp+" °C por frescura"}
+    if(a.grind&&rec.grind!=null){rec.grind+=a.grind*gstep(method);notes.grind=df54(a.grind,method)+" por frescura"}
+    if(a.bloom&&rec.bloom!=null){rec.bloom=Math.max(20,rec.bloom+a.bloom);notes.bloom=(a.bloom>0?"+":"")+a.bloom+" s por frescura"}
+    if(a.bloomMult&&method==="V60"){rec.bloomMult=Math.max(rec.bloomMult||0,a.bloomMult);notes.bloomMult="más agua por frescura"}
+    if(a.ratio&&rec.ratio!=null){rec.ratio+=a.ratio;notes.ratio="más corto por frescura"}
+    if(rec.temp!=null){if(fr.cap&&rec.temp>fr.cap){rec.temp=fr.cap;notes.temp="máx. 92 °C en tueste oscuro"}if(fr.floor&&rec.temp<fr.floor){rec.temp=fr.floor;notes.temp="mín. 92 °C en tueste claro"}}
+  }
+  return{an,rec,notes};
+}
+function diagnose(b){
+  const t=[];if(!b)return t;
+  const a=b.acid,s=b.sweet,bi=b.bitter,bo=b.body;const esp=b.method==="Espresso";const fine="En el DF54, "+df54(-1,b.method),coarse="En el DF54, "+df54(1,b.method);
+  if(a!=null&&bi!=null&&a>=4&&bi<=2)t.push(esp?"Acidez alta y poco amargor: suele ser subextracción. "+fine+" o alarga el ratio (más bebida en taza).":"Acidez alta y poco amargor: suele ser subextracción. Prueba a moler un poco más fino o subir la temperatura 1–2 °C.");
+  if(bi!=null&&bi>=4)t.push(esp?"Amargor marcado: probable sobreextracción. "+coarse+" o para la máquina antes (ratio más corto).":"Amargor marcado: probable sobreextracción. "+coarse+", baja la temperatura o acorta el tiempo.");
+  if(bo!=null&&bo<=2)t.push("Poco cuerpo: sube la dosis o usa un ratio más corto (menos agua por gramo).");
+  if(bo!=null&&bo>=5&&b.method!=="Espresso")t.push("Cuerpo muy denso: un ratio algo más largo puede dar más claridad.");
+  if(s!=null&&s<=2&&!t.length)t.push("Falta dulzor sin defectos claros: mueve el DF54 de "+(esp?"medio en medio número":gstep(b.method)+" en "+gstep(b.method)+" números")+" hasta encontrar el punto dulce.");
+  if(!t.length&&b.score>=8)t.push("Taza equilibrada. Repite la receta y cambia una sola variable cada vez para afinar.");
+  if(!t.length)t.push("Registra acidez, dulzor y amargor para obtener un diagnóstico más preciso.");
+  return t;
+}
+
+/* ---------- vistas ---------- */
+function demoBanner(){return isDemo()?`<div class="banner"><b>Datos de ejemplo.</b> Así se verá tu bitácora. Desaparecen en cuanto guardes tu primera preparación.</div>`:""}
+function ageText(iso){const d=daysSince(iso,Date.now());return d==null?"":d===0?"tostado hoy":d===1?"hace 1 día":"hace "+d+" días"}
+
+function viewNew(){
+  const f=ui.form;const isEsp=f.method==="Espresso";const v60=f.method==="V60";
+  const ratio=num(f.dose)&&num(f.water)?num(f.water)/num(f.dose):null;
+  const coffees=[...new Set(store.real.map(b=>b.coffee).filter(Boolean))];
+  return `<div class="view">
+  <section class="block"><h2>${ui.editingId?"Editar preparación":"Nueva preparación"}</h2>
+    <div class="label">Método</div>
+    <div class="chips" role="group" aria-label="Método">${METHODS.map(m=>`<button class="chip" data-act="method" data-v="${m}" aria-pressed="${f.method===m}">${m}</button>`).join("")}</div>
+    ${!ui.editingId&&store.real.some(b=>b.method===f.method)?`<div class="hint">Rellenado con tu última receta de ${esc(f.method)}.</div>`:""}
+  </section>
+  <section class="block"><div class="label">Café</div>
+    <div class="field txt"><label class="hint" for="f-coffee">Origen o nombre</label><input id="f-coffee" data-f="coffee" list="dl-coffee" placeholder="Etiopía Guji, natural" value="${esc(f.coffee)}"><datalist id="dl-coffee">${coffees.map(c=>`<option value="${esc(c)}">`).join("")}</datalist></div>
+    <div class="field"><span class="hint">Tueste</span><div class="chips">${ROASTS.map(r=>`<button class="chip" data-act="roast" data-v="${r}" aria-pressed="${f.roast===r}">${r}</button>`).join("")}</div></div>
+    <div class="field"><label class="hint" for="f-roastDate">Fecha de tueste <span>(opcional)</span></label>
+      <div class="row" style="flex-wrap:nowrap"><input id="f-roastDate" data-f="roastDate" type="date" max="${todayISO()}" value="${esc(f.roastDate)}" style="flex:1">${f.roastDate?`<button class="btn ghost small" style="flex:0 0 auto" data-act="clear-roast">Quitar</button>`:""}</div>
+      <span class="age" id="age-v">${esc(ageText(f.roastDate))}</span></div>
+  </section>
+  <section class="block"><div class="label">Receta</div>
+    <div class="grid2">
+      <div class="field"><label class="hint" for="f-dose">Dosis café (g)</label><input id="f-dose" data-f="dose" inputmode="decimal" placeholder="${isEsp?"18":"15"}" value="${esc(f.dose)}"></div>
+      <div class="field"><label class="hint" for="f-water">${isEsp?"Bebida final (g)":"Agua total (g)"}</label><input id="f-water" data-f="water" inputmode="decimal" placeholder="${isEsp?"36":"240"}" value="${esc(f.water)}"></div>
+    </div>
+    <div class="ratio"><span class="label">Ratio</span><span class="v" id="ratio-v">${ratio?"1:"+ratio.toFixed(1):"–"}</span></div>
+    <div class="grid2">
+      <div class="field"><label class="hint" for="f-grind">Molienda DF54 (0–90)</label><input id="f-grind" data-f="grind" inputmode="decimal" placeholder="${DF54_START[f.method]?DF54_START[f.method][f.roast||"Medio"]:"50"}" value="${esc(f.grind)}"></div>
+      ${isEsp?"":`<div class="field"><label class="hint" for="f-temp">Temperatura (°C)</label><input id="f-temp" data-f="temp" inputmode="decimal" placeholder="94" value="${esc(f.temp)}"></div>`}
+      <div class="field"><label class="hint" for="f-time">${isEsp?"Tiempo hasta parar (s)":"Tiempo total (m:ss)"}</label><input id="f-time" data-f="time" inputmode="decimal" placeholder="${isEsp?"28":"3:00"}" value="${esc(f.time)}"></div>
+      ${isEsp?`<div class="field"><label class="hint" for="f-stopW">Peso al parar (g) <span>(opcional)</span></label><input id="f-stopW" data-f="stopW" inputmode="decimal" placeholder="33" value="${esc(f.stopW||"")}"></div>`:""}
+      ${v60?"":`<div class="field"><label class="hint" for="f-bloom">${isEsp?"Preinfusión (s)":"Bloom (s)"}</label><input id="f-bloom" data-f="bloom" inputmode="numeric" placeholder="${isEsp?"5":"30"}" value="${esc(f.bloom)}"></div>`}
+    </div>
+    <div class="hint">DF54: menor número = más fino.${DF54_START[f.method]?` Punto de partida para ${esc(f.method)} con tueste ${(f.roast||"Medio").toLowerCase()}: ${DF54_START[f.method][f.roast||"Medio"]} (rango habitual ${DF54_START[f.method].range}).`:""}</div>
+    ${isEsp?`<div class="hint">Sage Bambino: temperatura y presión fijas, no se registran. El tiempo es hasta que paras la máquina; pesa la bebida final cuando deje de gotear. Si anotas también el peso al parar, calcularé tu goteo medio.</div>`:""}
+  </section>
+  ${v60&&f.pv?`<section class="block"><div class="label">Vertidos</div>
+    <div class="pours">
+      <div class="stepper"><span><b>Número de vertidos</b><br><span class="hint">después del bloom</span></span>
+        <span class="ctl"><button data-act="pv-n" data-v="-1" aria-label="Quitar vertido" ${f.pv.rows.length<=1?"disabled":""}>−</button><span class="n">${f.pv.rows.length}</span><button data-act="pv-n" data-v="1" aria-label="Añadir vertido" ${f.pv.rows.length>=8?"disabled":""}>+</button></span></div>
+      <div id="pours-table">${poursTableHTML(f)}</div>
+      <div id="pours-meta" style="display:flex;flex-direction:column;gap:10px">${poursMetaHTML(f)}</div>
+    </div></section>`:""}
+  <section class="block"><div class="label">Valoración</div>
+    <div class="hint">Satisfacción global</div>
+    <div class="score" role="group" aria-label="Nota de 1 a 10">${[1,2,3,4,5,6,7,8,9,10].map(n=>`<button data-act="score" data-v="${n}" class="${f.score===n?"on":""}" style="${f.score===n?"background:"+scoreColor(n):""}" aria-pressed="${f.score===n}">${n}</button>`).join("")}</div>
+    <div class="taste">${TASTE.map(([k,l,a,b])=>`<span>${l}</span><div class="seg" role="group" aria-label="${l}">${[1,2,3,4,5].map(n=>`<button data-act="taste" data-k="${k}" data-v="${n}" class="${f[k]===n?"on":""}" aria-pressed="${f[k]===n}">${n}</button>`).join("")}</div><div class="scale-ends"><span>${a}</span><span>${b}</span></div>`).join("")}</div>
+    <div class="field"><label class="hint" for="f-notes">Notas de cata</label><textarea id="f-notes" data-f="notes" placeholder="Melocotón, final limpio, algo astringente…">${esc(f.notes)}</textarea></div>
+  </section>
+  <div class="row">${ui.editingId?`<button class="btn ghost" data-act="cancel-edit">Cancelar</button>`:""}<button class="btn primary" data-act="save">${ui.editingId?"Guardar cambios":"Guardar preparación"}</button></div>
+  ${f.score==null?`<div class="hint">Elige una nota de 1 a 10 para poder guardar.</div>`:""}
+  </div>`;
+}
+
+function recipeLine(b){
+  const p=[];if(b.dose)p.push(r1(b.dose)+" g");if(b.dose&&b.water)p.push("1:"+(b.water/b.dose).toFixed(1));
+  if(b.grind!=null&&b.grind!=="")p.push("DF54 "+b.grind);if(b.temp&&b.method!=="Espresso")p.push(b.temp+"°");if(b.time!=null)p.push(b.method==="Espresso"?Math.round(b.time)+" s":fmtTime(b.time));
+  if(poursOf(b))p.push((b.pours.length-1)+" vert.");
+  return p.join(" · ");
+}
+function pourLine(b){const p=poursOf(b);if(!p)return"";return p.map((x,i)=>(i?fmtTime(x.t)+" ":"Bloom ")+x.g+" g").join(" → ")}
+function viewHist(){
+  const all=brews();const methods=["Todos",...methodsIn(all)];
+  if(!methods.includes(ui.histFilter))ui.histFilter="Todos";
+  const list=ui.histFilter==="Todos"?all:all.filter(b=>b.method===ui.histFilter);
+  return `<div class="view">${demoBanner()}
+  <section class="block">
+    <div class="row" style="justify-content:space-between"><h2>Historial <span class="hint">(${list.length})</span></h2>${!isDemo()?`<button class="btn ghost small" style="flex:0 0 auto" data-act="export">Exportar CSV</button>`:""}</div>
+    <div class="chips">${methods.map(m=>`<button class="chip" data-act="hfilter" data-v="${m}" aria-pressed="${ui.histFilter===m}">${m}</button>`).join("")}</div>
+  </section>
+  ${list.length?`<div class="list">${list.map(b=>{const open=ui.expanded===b.id;const age=ageOf(b);return `<div class="entry">
+    <button class="head" data-act="expand" data-id="${b.id}" aria-expanded="${open}">
+      <span class="badge" style="background:${scoreColor(b.score)}">${b.score}</span>
+      <span style="min-width:0;display:flex;flex-direction:column;gap:2px">
+        <span class="e-title"><span>${esc(b.method)}${b.coffee?" · "+esc(b.coffee):""}</span><span class="e-date">${fmtDate(b.ts)}</span></span>
+        <span class="recipe">${esc(recipeLine(b))||"Sin receta"}</span>
+      </span></button>
+    ${open?`<div class="detail">
+      <div class="bars">${TASTE.map(([k,l])=>b[k]!=null?`<span>${l}</span><span class="bar"><i style="width:${b[k]*20}%"></i></span><span class="recipe">${b[k]}</span>`:"").join("")}</div>
+      ${b.roast||age!=null?`<div class="hint">${b.roast?"Tueste "+esc(b.roast).toLowerCase():""}${b.roast&&age!=null?" · ":""}${age!=null?age+" días desde el tueste":""}${b.method!=="V60"&&b.bloom?" · "+(b.method==="Espresso"?"preinfusión ":"bloom ")+esc(b.bloom)+" s":""}</div>`:""}
+      ${poursOf(b)?`<div>${pourChart(b.pours,b.time,{h:110})}<div class="recipe">${esc(pourLine(b))}</div></div>`:""}
+      ${b.notes?`<div class="notes">${esc(b.notes)}</div>`:""}
+      ${b.demo?"":ui.confirmDel===b.id?`<div class="row"><span class="hint" style="flex:1 1 100%">¿Borrar esta preparación? No se puede deshacer.</span><button class="btn ghost small" data-act="nodel">Cancelar</button><button class="btn danger small" data-act="del" data-id="${b.id}">Borrar</button></div>`:
+      `<div class="row"><button class="btn ghost small" data-act="dup" data-id="${b.id}">Repetir receta</button><button class="btn ghost small" data-act="edit" data-id="${b.id}">Editar</button><button class="btn ghost small" data-act="askdel" data-id="${b.id}">Borrar</button></div>`}
+    </div>`:""}</div>`}).join("")}</div>`:`<div class="empty">Aún no hay preparaciones de ${esc(ui.histFilter)}.</div>`}
+  </div>`;
+}
+
+function dripOf(list){const d=list.filter(b=>b.stopW!=null&&b.water!=null&&b.water>=b.stopW).map(b=>b.water-b.stopW);return d.length?{avg:d.reduce((x,y)=>x+y,0)/d.length,n:d.length}:null}
+function stopRow(m,list,rec){
+  if(m!=="Espresso"||rec.ratio==null)return"";const dose=rec.dose!=null?rec.dose:18;const target=dose*rec.ratio;const dr=dripOf(list);
+  if(!dr)return `<div class="sug-row"><span class="k">Para la máquina en</span><span class="v">–</span><span class="meta"><span>Anota el peso al parar en algunos shots para calcular tu goteo y decirte en qué peso parar para llegar a ${Math.round(target)} g.</span></span></div>`;
+  return `<div class="sug-row"><span class="k">Para la máquina en</span><span class="v">${Math.round(target-dr.avg)} g</span><span class="meta"><span>Para llegar a ${Math.round(target)} g en taza</span><span>goteo medio tras parar: +${r1(dr.avg)} g (${dr.n} shots)</span></span></div>`;
+}
+function viewCfg(){
+  const c=dcfg();const st=drive.state;const conn=c.connected;
+  const status={off:"Sin conectar",expired:"Conectada · toca Sincronizar para subir los cambios",syncing:"Sincronizando…",ok:"Sincronizada a las "+(drive.last?hhmm(drive.last):"–"),offline:"Sin conexión. Los cambios se subirán al volver a tener red",error:"No se pudo sincronizar. Vuelve a intentarlo",noconfig:"Falta configurar el ID de cliente de Google en config.js"}[st]||"";
+  const pending=store.real.filter(b=>stamp(b)>(drive.last||0)).length;
+  return `<div class="view">
+  <section class="block"><h2>Ajustes</h2></section>
+  <div class="card"><div class="label">Google Drive</div>
+    <div class="kv"><span>Estado</span><span>${esc(status)}</span>
+      <span>Archivo</span><span>${FILE_NAME}${drive.fileId?` · <a href="https://drive.google.com/file/d/${drive.fileId}/view" target="_blank" rel="noopener" style="color:var(--accent)">abrir</a>`:""}</span>
+      <span>En este móvil</span><span>${store.real.length} preparaciones${conn&&pending?` · ${pending} sin subir`:""}</span></div>
+    ${st==="noconfig"?`<div class="hint">Sigue los pasos del README para crear el ID de cliente y pegarlo en config.js.</div>`:
+      !conn?`<button class="btn primary" data-act="d-connect">Conectar con Google Drive</button><div class="hint">Tus preparaciones se guardarán en el archivo ${FILE_NAME} de tu Drive. La app solo puede ver los archivos que ella misma crea.</div>`:
+      `<div class="row"><button class="btn primary" data-act="d-sync">${tokenValid()?"Sincronizar ahora":"Sincronizar"}</button><button class="btn ghost" data-act="d-off">Desconectar</button></div>
+       <div class="hint">Google da acceso por 1 hora cada vez. Pasado ese tiempo, la app sigue guardando en el móvil y te pide un toque en "Sincronizar" para subir los cambios.</div>`}
+  </div>
+  <div class="card"><div class="label">Copias y datos</div>
+    <div class="row"><button class="btn ghost small" data-act="export" ${store.real.length?"":"disabled"}>Exportar CSV</button><button class="btn ghost small" data-act="backup" ${store.real.length?"":"disabled"}>Copia JSON</button>
+      <label class="btn ghost small filebtn" style="flex:1;text-align:center">Importar…<input type="file" id="imp-file" accept=".csv,.json,text/csv,application/json"></label></div>
+    <div class="hint">Importar acepta el CSV exportado desde la versión en Claude o una copia JSON. Las preparaciones se combinan con las que ya tienes, sin duplicar.</div>
+  </div>
+  <div class="card"><div class="label">Equipo</div><div class="kv"><span>Espresso</span><span>Sage Bambino (temperatura y presión fijas)</span><span>Molino</span><span>MiCoffee DF54 · 0–90, menor = más fino</span></div></div>
+  </div>`;
+}
+function confDots(c){return `<span class="conf" title="Confianza">${[1,2,3].map(i=>`<i class="${i<=c?"on":""}"></i>`).join("")}</span>`}
+function chartSVG(pa,p){
+  const W=340,H=210,L=34,R=12,T=12,B=30;
+  let x0=pa.min,x1=pa.max;if(x1===x0){x0-=1;x1+=1}const pad=(x1-x0)*.08;x0-=pad;x1+=pad;
+  const sx=x=>L+(x-x0)/(x1-x0)*(W-L-R),sy=y=>T+(10-y)/9*(H-T-B);
+  const step=(()=>{const raw=(x1-x0)/4,m=10**Math.floor(Math.log10(raw)),n=raw/m;return(n<1.5?1:n<3?2:n<7?5:10)*m})();
+  const tick=x=>p.k==="time"?fmtTime(x):p.k==="ratio"||p.k==="bloomMult"?x.toFixed(step<1?1:0):String(r1(x));
+  let g="";for(let y=1;y<=10;y+=3){g+=`<line x1="${L}" x2="${W-R}" y1="${sy(y)}" y2="${sy(y)}" stroke="var(--line)" stroke-width="1"/><text x="${L-6}" y="${sy(y)+3}" text-anchor="end">${y}</text>`}
+  for(let x=Math.ceil(x0/step)*step;x<=x1+1e-9;x+=step){g+=`<text x="${sx(x)}" y="${H-12}" text-anchor="middle">${tick(x)}</text>`}
+  let curve="";if(pa.fit){let d="";for(let i=0;i<=40;i++){const x=pa.min+(pa.max-pa.min)*i/40;const y=Math.max(1,Math.min(10,pa.fit.f(x)));d+=(i?"L":"M")+sx(x).toFixed(1)+" "+sy(y).toFixed(1)}curve=`<path d="${d}" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 3"/>`}
+  const pts=pa.pts.map(o=>`<circle cx="${sx(o.x).toFixed(1)}" cy="${sy(o.y).toFixed(1)}" r="4.5" fill="${scoreColor(o.y)}" fill-opacity=".85" stroke="var(--surface)" stroke-width="1"/>`).join("");
+  const line=p.info?"":(()=>{const ex=sx(Math.max(x0,Math.min(x1,pa.est)));const anchor=ex>W-70?"end":"start";return `<line x1="${ex}" x2="${ex}" y1="${T}" y2="${H-B}" stroke="var(--accent)" stroke-width="2"/><text x="${anchor==="end"?ex-4:ex+4}" y="${T+9}" text-anchor="${anchor}" style="fill:var(--accent)">${esc(p.fmt(pa.est))}</text>`})();
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Nota frente a ${p.label}">${g}${curve}${line}${pts}<text x="${L}" y="${H-1}" style="font-size:9px">${p.label}${p.unit?" ("+p.unit+")":""} →</text></svg>`;
+}
+function freshCard(method,list){
+  const withDate=[];const seen=new Set();
+  list.forEach(b=>{if(b.roastDate&&b.coffee&&!seen.has(b.coffee)){seen.add(b.coffee);withDate.push(b)}});
+  if(!withDate.length)return{html:`<div class="card"><div class="label">Frescura del café</div><div class="hint">Añade la fecha de tueste al registrar y ajustaré la receta según los días que tenga el café.</div></div>`,fr:null};
+  if(!withDate.some(b=>b.coffee===ui.freshCoffee))ui.freshCoffee=withDate[0].coffee;
+  const b=withDate.find(x=>x.coffee===ui.freshCoffee);
+  const age=daysSince(b.roastDate,Date.now());const fr=freshness(age,b.roast,method);
+  const html=`<div class="card"><div class="label">Frescura del café de hoy</div>
+    ${withDate.length>1?`<div class="chips">${withDate.slice(0,5).map(x=>`<button class="chip" data-act="fcoffee" data-v="${esc(x.coffee)}" aria-pressed="${x.coffee===ui.freshCoffee}">${esc(x.coffee)}</button>`).join("")}</div>`:""}
+    <div class="fresh-head"><span><span class="fresh-age">${age} días</span> <span class="hint">desde el tueste${withDate.length===1?" · "+esc(b.coffee):""}</span></span><span class="pill" style="background:${fr.color}">${fr.tag}</span></div>
+    <ul class="diag">${fr.tips.map(t=>`<li>${t}</li>`).join("")}</ul>
+    ${Object.keys(fr.adj).length||fr.cap||fr.floor?`<label class="switch"><input type="checkbox" id="fresh-apply" data-act="fapply" ${ui.applyFresh?"checked":""}> Aplicar este ajuste a la receta sugerida</label>`:""}
+  </div>`;
+  return{html,fr};
+}
+function viewSug(){
+  const all=brews();const methods=methodsIn(all);
+  if(!methods.length)return `<div class="view"><div class="empty">Registra al menos tres preparaciones de un método para recibir sugerencias.</div></div>`;
+  if(!methods.includes(ui.sugMethod))ui.sugMethod=methods.slice().sort((a,b)=>all.filter(x=>x.method===b).length-all.filter(x=>x.method===a).length)[0];
+  const list=all.filter(b=>b.method===ui.sugMethod);
+  const head=`<section class="block"><h2>Sugerencias</h2><div class="chips">${methods.map(m=>`<button class="chip" data-act="smethod" data-v="${m}" aria-pressed="${ui.sugMethod===m}">${m} <span class="hint">${all.filter(b=>b.method===m).length}</span></button>`).join("")}</div></section>`;
+  const fc=freshCard(ui.sugMethod,list);
+  if(list.length<3)return `<div class="view">${demoBanner()}${head}<div class="card"><div>Con ${list.length} ${list.length===1?"preparación":"preparaciones"} de ${esc(ui.sugMethod)} aún no hay base para sugerir. Registra al menos 3, variando una cosa cada vez.</div></div>${DF54_START[ui.sugMethod]?`<div class="card"><div class="label">Punto de partida en tu DF54 · ${esc(ui.sugMethod)}</div><div class="sug">${ROASTS.map(r=>`<div class="sug-row"><span class="k">Tueste ${r.toLowerCase()}</span><span class="v">${DF54_START[ui.sugMethod][r]}</span></div>`).join("")}</div><div class="hint">Menor número = más fino. Rango habitual ${DF54_START[ui.sugMethod].range}. Comprueba el cero de tu molino (fresas tocándose) para que estos valores te sirvan.</div></div>`:""}${fc.html}<div class="card"><div class="label">Tu última taza</div><ul class="diag">${diagnose(list[0]).map(t=>`<li>${t}</li>`).join("")}</ul></div></div>`;
+  const {an,rec,notes}=suggestion(ui.sugMethod,list,ui.applyFresh?fc.fr:null);
+  const rows=PARAMS.filter(p=>!p.info&&rec[p.k]!=null);
+  const chartable=PARAMS.filter(p=>an.params[p.k]&&(p.k!=="pours"&&p.k!=="bloomMult"||ui.sugMethod==="V60"));
+  if(!chartable.some(p=>p.k===ui.chartParam))ui.chartParam=chartable[0]&&chartable[0].k;
+  const cp=PARAMS.find(p=>p.k===ui.chartParam);
+  const b=an.best;
+  return `<div class="view">${demoBanner()}${head}
+  <div class="card">
+    <div class="row" style="justify-content:space-between"><div class="label">Receta sugerida · ${esc(ui.sugMethod)}</div><span class="hint">${an.n} tazas</span></div>
+    <div class="sug">${rows.map(p=>{const a=an.params[p.k];const esp=ui.sugMethod==="Espresso";const fm=esp&&p.k==="time"?v=>Math.round(v)+" s":p.fmt;return `<div class="sug-row"><span class="k">${esp&&p.k==="time"?"Parar a los":esp&&p.k==="bloom"?"Preinfusión":p.k==="time"?"Tiempo total":p.label}</span><span class="v">${esc(fm(rec[p.k]))}</span>
+      ${notes[p.k]?`<span class="adj">${esc(notes[p.k])}</span>`:""}
+      <span class="meta"><span>Tus tazas ≥ ${a.smax-1}: ${a.lo===a.hi?esc(fm(a.lo)):esc(fm(a.lo))+" – "+esc(fm(a.hi))}</span><span>${a.how} ${confDots(a.conf)}</span></span></div>`}).join("")}${stopRow(ui.sugMethod,list,rec)}</div>
+    <button class="btn primary" data-act="use-sug">Preparar con esta receta</button>
+  </div>
+  ${fc.html}
+  <div class="card"><div class="label">Tu última taza · ${fmtDate(list[0].ts)}</div><ul class="diag">${diagnose(list[0]).map(t=>`<li>${t}</li>`).join("")}</ul></div>
+  ${an.infl.length?`<div class="card"><div class="label">Qué más pesa en tu nota</div><div class="infl">${an.infl.filter(o=>o.p.k!=="pours"&&o.p.k!=="bloomMult"||ui.sugMethod==="V60").map(o=>`<span>${o.p.label}</span><span class="bar"><i style="width:${Math.round(Math.abs(o.r)*100)}%"></i></span><small>${Math.abs(o.r)<.2?"apenas influye por ahora":(o.r>0?o.p.hi:o.p.lo)+" → mejor nota"}</small>`).join("")}</div><div class="hint">Relación lineal en tus registros. Si una variable tiene un punto óptimo intermedio, puede pesar más de lo que indica la barra.</div></div>`:""}
+  ${cp?`<div class="card"><div class="label">Nota según variable</div><div class="chips">${chartable.map(p=>`<button class="chip" data-act="cparam" data-v="${p.k}" aria-pressed="${ui.chartParam===p.k}">${p.label}</button>`).join("")}</div>${chartSVG(an.params[cp.k],cp)}<div class="hint">Cada punto es una taza.${cp.info?"":" La línea marca el valor sugerido por tus datos (sin ajuste de frescura)"}${an.params[cp.k].fit?"; la curva discontinua, la tendencia de tus notas":""}.</div></div>`:""}
+  ${b?`<div class="card"><div class="label">Tu mejor taza de ${esc(ui.sugMethod)}</div><div class="row" style="flex-wrap:nowrap"><span class="badge" style="background:${scoreColor(b.score)}">${b.score}</span><span style="min-width:0"><div style="font-weight:600">${esc(b.coffee||b.method)}</div><div class="recipe">${esc(recipeLine(b))}</div></span></div>${poursOf(b)?pourChart(b.pours,b.time,{h:110}):""}${b.demo?"":`<button class="btn ghost small" data-act="dup" data-id="${b.id}">Repetir esta receta</button>`}</div>`:""}
+  </div>`;
+}
+
+/* ---------- render y eventos ---------- */
+function render(){
+  const app=$("#app");
+  const ae=document.activeElement;const active=ae&&ae.id;
+  app.innerHTML=ui.tab==="new"?viewNew():ui.tab==="hist"?viewHist():ui.tab==="cfg"?viewCfg():viewSug();
+  $("#gear").setAttribute("aria-pressed",ui.tab==="cfg");
+  document.querySelectorAll("nav.tabs button").forEach(b=>b.setAttribute("aria-current",b.dataset.tab===ui.tab?"page":"false"));
+  if(active&&/^(f|p)-/.test(active)){const el=document.getElementById(active);if(el)el.focus()}
+}
+function go(tab){ui.tab=tab;render();window.scrollTo(0,0)}
+document.querySelector("nav.tabs").addEventListener("click",e=>{const b=e.target.closest("button[data-tab]");if(b)go(b.dataset.tab)});
+$("#app").addEventListener("input",e=>{
+  const f=ui.form;const el=e.target;
+  if(el.dataset.pf){
+    const pv=f.pv;pv.auto=false;
+    if(el.dataset.pf==="bloomG")pv.bloomG=el.value;else pv.rows[+el.dataset.i][el.dataset.pf]=el.value;
+    refreshPours(false);return;
+  }
+  const k=el.dataset.f;if(!k)return;f[k]=el.value;
+  if(k==="dose"||k==="water"){const r=num(f.dose)&&num(f.water)?num(f.water)/num(f.dose):null;const v=$("#ratio-v");if(v)v.textContent=r?"1:"+r.toFixed(1):"–"}
+  if(k==="roastDate"){const a=$("#age-v");if(a)a.textContent=ageText(f.roastDate)}
+  if(f.pv&&(k==="dose"||k==="water"||k==="time")){if(f.pv.auto){distribute(f);refreshPours(true)}else refreshPours(false)}
+});
+$("#app").addEventListener("change",e=>{if(e.target.id==="f-roastDate")render();if(e.target.id==="fresh-apply"){ui.applyFresh=e.target.checked;render()}});
+$("#app").addEventListener("click",async e=>{
+  const t=e.target.closest("[data-act]");if(!t||t.id==="fresh-apply")return;const a=t.dataset.act,v=t.dataset.v,id=t.dataset.id;const f=ui.form;
+  const find=()=>store.real.find(x=>x.id===id)||DEMO.find(x=>x.id===id);
+  switch(a){
+    case"method":{if(f.method===v)return;
+      if(ui.editingId){f.method=v;f.pv=null;if(v==="V60")defaultPv(f,3)}
+      else{const keep={score:f.score,acid:f.acid,sweet:f.sweet,bitter:f.bitter,body:f.body,notes:f.notes};const had=store.real.some(b=>b.method===v);const nf=blankForm(v);
+        if(!had){["coffee","roast","roastDate"].forEach(k=>nf[k]=f[k])}ui.form=Object.assign(nf,keep)}
+      render();break}
+    case"roast":f.roast=f.roast===v?"":v;render();break;
+    case"clear-roast":f.roastDate="";render();break;
+    case"score":f.score=+v;render();break;
+    case"taste":f[t.dataset.k]=f[t.dataset.k]===+v?null:+v;render();break;
+    case"pv-n":{const pv=f.pv;const n=Math.max(1,Math.min(8,pv.rows.length+ +v));const bT=parseTime(pv.rows[0]&&pv.rows[0].t)||40;
+      pv.rows=Array.from({length:n},()=>({t:"",g:""}));pv.rows[0].t=fmtTime(bT);pv.auto=true;distribute(f);render();break}
+    case"pv-redo":f.pv.auto=true;distribute(f);render();break;
+    case"pv-usesum":{const s=(num(f.pv.bloomG)||0)+f.pv.rows.reduce((x,r)=>x+(num(r.g)||0),0);f.water=String(s);render();break}
+    case"save":{
+      if(f.score==null){toast("Falta la nota global");return}
+      let pours=null,bloom=num(f.bloom),water=num(f.water);
+      if(f.method==="V60"&&f.pv){pours=pvToPours(f.pv);
+        if(!pours){toast("Completa los vertidos o pon 1 vertido");return}
+        for(let i=1;i<pours.length;i++)if(pours[i].t<=pours[i-1].t){toast("Revisa los tiempos de los vertidos");return}
+        bloom=pours[1].t;if(water==null)water=pours.reduce((x,p)=>x+p.g,0)}
+      const prev=ui.editingId?store.real.find(x=>x.id===ui.editingId):null;
+      const b={id:ui.editingId||newId(),ts:prev?prev.ts:Date.now(),method:f.method,coffee:(f.coffee||"").trim(),roast:f.roast||"",roastDate:f.roastDate||"",dose:num(f.dose),water,grind:num(f.grind),temp:f.method==="Espresso"?null:num(f.temp),stopW:f.method==="Espresso"?num(f.stopW):null,time:parseTime(f.time),bloom,pours,score:f.score,acid:f.acid,sweet:f.sweet,bitter:f.bitter,body:f.body,notes:(f.notes||"").trim()};
+      t.disabled=true;
+      try{await saveBrew(b);const was=!!ui.editingId;ui.editingId=null;ui.form=blankForm(b.method);ui.sugMethod=b.method;ui.expanded=b.id;toast(was?"Cambios guardados":"Preparación guardada");go("hist")}
+      catch(err){t.disabled=false;toast(err&&err.code==="quota_exceeded"?"No queda espacio: borra preparaciones antiguas":"No se pudo guardar. Inténtalo de nuevo")}
+      break}
+    case"cancel-edit":ui.editingId=null;ui.form=blankForm(f.method);go("hist");break;
+    case"hfilter":ui.histFilter=v;ui.expanded=null;render();break;
+    case"expand":ui.expanded=ui.expanded===id?null:id;ui.confirmDel=null;render();break;
+    case"askdel":ui.confirmDel=id;render();break;
+    case"nodel":ui.confirmDel=null;render();break;
+    case"del":try{await deleteBrew(id);ui.confirmDel=null;ui.expanded=null;toast("Preparación borrada");render()}catch(err){toast("No se pudo borrar")}break;
+    case"edit":{const b=find();if(!b)return;ui.editingId=id;ui.form=formFrom(b);go("new");break}
+    case"dup":{const b=find();if(!b)return;ui.editingId=null;const nf=formFrom(b);Object.assign(nf,{score:null,acid:null,sweet:null,bitter:null,body:null,notes:""});ui.form=nf;go("new");toast("Receta cargada");break}
+    case"smethod":ui.sugMethod=v;render();break;
+    case"fcoffee":ui.freshCoffee=v;render();break;
+    case"cparam":ui.chartParam=v;render();break;
+    case"use-sug":{
+      const m=ui.sugMethod;const list=brews().filter(b=>b.method===m);const fc=freshCard(m,list);
+      const {an,rec}=suggestion(m,list,ui.applyFresh?fc.fr:null);
+      const nf=blankForm(m);nf.method=m;
+      const dose=rec.dose!=null?r1(rec.dose):num(nf.dose);if(dose)nf.dose=String(dose);
+      if(rec.ratio!=null&&dose)nf.water=String(Math.round(dose*rec.ratio));
+      if(rec.grind!=null)nf.grind=String(Math.round(rec.grind*2)/2);if(rec.temp!=null)nf.temp=String(Math.round(rec.temp));
+      if(rec.time!=null)nf.time=m==="Espresso"?String(Math.round(rec.time)):fmtTime(Math.round(rec.time/5)*5);
+      if(rec.bloom!=null)nf.bloom=String(Math.round(rec.bloom));
+      if(fc.fr&&ui.freshCoffee){const src=list.find(b=>b.coffee===ui.freshCoffee);if(src){nf.coffee=src.coffee;nf.roast=src.roast||"";nf.roastDate=src.roastDate||""}}
+      else if(!nf.coffee&&an.best)nf.coffee=an.best.coffee||"";
+      if(m==="V60"){const n=rec.pours!=null?Math.max(1,Math.min(8,Math.round(rec.pours))):3;
+        nf.pv={auto:true,mult:rec.bloomMult||2.5,bloomG:"",rows:Array.from({length:n},()=>({t:"",g:""})),bT:rec.bloom!=null?Math.round(rec.bloom/5)*5:40};
+        distribute(nf)}
+      ui.editingId=null;ui.form=nf;go("new");toast("Receta sugerida cargada");break}
+    case"export":{
+      const cols=["fecha","metodo","cafe","tueste","fecha_tueste","dias_tueste","dosis_g","agua_g","ratio","molienda_df54","temp_c","tiempo_s","peso_al_parar_g","bloom_s","vertidos","plan_vertidos","nota","acidez","dulzor","amargor","cuerpo","notas"];
+      const q=s=>{s=s==null?"":String(s);return/[",;\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s};
+      const rows=store.real.slice().sort((a,b)=>b.ts-a.ts).map(b=>[new Date(b.ts).toISOString(),b.method,b.coffee,b.roast,b.roastDate,ageOf(b),b.dose,b.water,b.dose&&b.water?(b.water/b.dose).toFixed(2):"",b.grind,b.temp,b.time,b.stopW,b.bloom,poursOf(b)?b.pours.length-1:"",pourLine(b),b.score,b.acid,b.sweet,b.bitter,b.body,b.notes].map(q).join(","));
+      downloadFile("bitacora-cafe-"+todayISO()+".csv","\ufeff"+[cols.join(","),...rows].join("\n"),"text/csv;charset=utf-8");
+      break}
+    case"backup":downloadFile("bitacora-cafe-copia-"+todayISO()+".json",JSON.stringify({app:"Bitácora de Café",formato:2,brews:store.real,deleted:store.deleted},null,1),"application/json");break;
+    case"d-connect":connectDrive();break;
+    case"d-sync":if(tokenValid())sync();else connectDrive();break;
+    case"d-off":disconnectDrive();break;
+  }
+});
+
+$("#app").addEventListener("change",e=>{if(e.target.id==="imp-file"&&e.target.files[0]){importFile(e.target.files[0]);e.target.value=""}});
+$("#sync").addEventListener("click",()=>{const st=drive.state;if(st==="off"||st==="expired"||st==="error"||st==="offline"){if(tokenValid())sync();else connectDrive()}else go("cfg")});
+$("#gear").addEventListener("click",()=>go(ui.tab==="cfg"?"new":"cfg"));
+loadLocal();ui.form=blankForm("V60");render();initDrive();
+})();
+</script>
+<script>if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));</script>
+</body>
+</html>

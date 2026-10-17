@@ -1,0 +1,17 @@
+{
+  "name": "Bitácora de Café",
+  "short_name": "Café",
+  "description": "Registro de preparaciones de café con valoración de cata y sugerencias de receta.",
+  "lang": "es",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F1F2EE",
+  "theme_color": "#9E2338",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
