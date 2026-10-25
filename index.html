@@ -291,6 +291,11 @@ const ScaleOCR=(()=>{
   const SEG={ "1111110":"0","0110000":"1","1101101":"2","1111001":"3","0110011":"4","1011011":"5","1011111":"6","1110000":"7","1110010":"7","1111111":"8","1111011":"9","1111111":"8","0011111":"6","1110011":"9"};
   // orden de segmentos: a b c d e f g
   function decode(bits){if(SEG[bits])return SEG[bits];let best=null,bd=9;for(const k in SEG){let d=0;for(let i=0;i<7;i++)if(k[i]!==bits[i])d++;if(d<bd){bd=d;best=SEG[k]}}return bd<=1?best:"?"}
+  // decodificación "suave": elige el dígito cuyo patrón encaja mejor con la intensidad de cada segmento
+  const PAT={"0":"1111110","1":"0110000","2":"1101101","3":"1111001","4":"0110011","5":"1011011","6":"1011111","7":"1110000","8":"1111111","9":"1111011"};
+  function softDecode(s,mx){if(mx<.15)return"?";const n=s.map(v=>Math.min(1,v/(mx*.8)));let best="?",bs=-1,second=-1;
+    for(const d in PAT){let sc=0;for(let i=0;i<7;i++)sc+=PAT[d][i]==="1"?n[i]:(1-n[i])*(i===6?1.3:1);if(sc>bs){second=bs;bs=sc;best=d}else if(sc>second)second=sc}
+    return bs>=5.2?best:"?"}
   function toCanvas(src,crop,maxW){
     const sw=src.naturalWidth||src.videoWidth||src.width,sh=src.naturalHeight||src.videoHeight||src.height;
     const c=crop||{x:0,y:0,w:sw,h:sh};const k=Math.min(1,maxW/c.w);
@@ -331,15 +336,26 @@ const ScaleOCR=(()=>{
     return best;
   }
   function rotated(cv,deg){if(!deg)return cv;const c=document.createElement("canvas");c.width=cv.width;c.height=cv.height;const x=c.getContext("2d");x.translate(c.width/2,c.height/2);x.rotate(deg*Math.PI/180);x.drawImage(cv,-cv.width/2,-cv.height/2);return c}
-  function read(src,opt){
-    opt=opt||{};const base=toCanvas(src,opt.crop,opt.maxW||1100);let best=null;
-    const score=r=>(r.time!=null?2:0)+(r.weight!=null?2:0)+(r.fields.length?1:0)-(r.fields.join("").includes("?")?1:0);
-    outer:for(const dil of [0,3,6])for(const deg of [0,-4,4,-8,8]){let r=readOne(rotated(base,deg),opt,dil);
+  const score=r=>(r.time!=null?2:0)+(r.weight!=null?2:0)+(r.fields.length?1:0)-(r.fields.join("").includes("?")?1:0);
+  function tryAll(base,opt){let best=null;
+    outer:for(const dil of [0,2,4])for(const deg of [0,-4,4,-8,8]){let r=plausible(readOne(rotated(base,deg),opt,dil));r.deg=deg;
       // endereza la foto según la inclinación de la fila y vuelve a leer
-      if(r.slope!=null&&Math.abs(r.slope)>.012){const r2=readOne(rotated(base,deg-Math.atan(r.slope)*180/Math.PI),opt,dil);if(score(r2)>=score(r))r=r2}
-      const sc=score(r);if(!best||sc>best.sc)best={sc,r};if(sc>=4)break outer}
-    return best.r;
+      if(r.slope!=null&&Math.abs(r.slope)>.012){const d2=deg-Math.atan(r.slope)*180/Math.PI;const r2=plausible(readOne(rotated(base,d2),opt,dil));r2.deg=d2;if(score(r2)>=score(r))r=r2}
+      const sc=score(r);if(!best||sc>best.sc)best={sc,r};if(sc>=4&&!opt.all)break outer}
+    return best;}
+  function read(src,opt){
+    opt=opt||{};const base=toCanvas(src,opt.crop,opt.maxW||1100);let best=tryAll(base,opt);
+    // 2ª pasada: recorta la zona de los números en alta resolución y la amplía
+    const r=best.r;if(r.box&&(best.sc<4||(r.box.y1-r.box.y0)<60)){
+      const full=rotated(toCanvas(src,opt.crop,4000),r.deg);const k=full.width/base.width;
+      const RH=(r.box.y1-r.box.y0)*k;const x0=Math.max(0,r.box.x0*k-RH*.8),x1=Math.min(full.width,r.box.x1*k+RH*.8),y0=Math.max(0,r.box.y0*k-RH*.9),y1=Math.min(full.height,r.box.y1*k+RH*.9);
+      const z=Math.min(5,Math.max(1,110/Math.max(1,RH)));const c=document.createElement("canvas");c.width=Math.round((x1-x0)*z);c.height=Math.round((y1-y0)*z);
+      const x=c.getContext("2d");x.imageSmoothingQuality="high";x.drawImage(full,x0,y0,x1-x0,y1-y0,0,0,c.width,c.height);
+      const b2=tryAll(c,opt);if(b2&&b2.sc>=best.sc)best=b2}
+    return plausible(best.r);
   }
+  // descarta lecturas imposibles para un café (más de 20 min o más de 2 kg)
+  function plausible(r){if(r.time!=null&&(r.time<0||r.time>1200||!r.timeText))r.time=null;if(r.weight!=null&&(r.weight<=0||r.weight>2000))r.weight=null;return r}
   function dilate(M,r){if(!r)return M;const {W,H}=M;const a=new Uint8Array(W*H),b=new Uint8Array(W*H);
     for(let y=0;y<H;y++){let run=-1e9;for(let x=0;x<W;x++){if(M.m[y*W+x])run=x;if(x-run<=r)a[y*W+x]=1}run=1e9;for(let x=W-1;x>=0;x--){if(M.m[y*W+x])run=x;if(run-x<=r)a[y*W+x]=1}}
     for(let x=0;x<W;x++){let run=-1e9;for(let y=0;y<H;y++){if(a[y*W+x])run=y;if(y-run<=r)b[y*W+x]=1}run=1e9;for(let y=H-1;y>=0;y--){if(a[y*W+x])run=y;if(run-y<=r)b[y*W+x]=1}}
@@ -377,23 +393,28 @@ const ScaleOCR=(()=>{
       const yc=yAt(cxOf(d));const full=d.h>=RH*.85;const y0=full?d.y0:yc+(oT!=null?oT:-RH/2),y1=full?d.y1:yc+(oB!=null?oB:RH/2),h=y1-y0+1;let ch,bits;
       if(d.w<h*.38)ch="1";else{const x0=d.x0,w=d.w;const Z=(a,b,c,e)=>lit(M,x0+a*w,y0+c*h,x0+b*w,y0+e*h);
         const s=[Z(.28,.72,0,.14),Z(.72,1,.16,.42),Z(.72,1,.58,.84),Z(.28,.72,.86,1),Z(0,.28,.58,.84),Z(0,.28,.16,.42),Z(.28,.72,.43,.57)];
-        const thr=Math.max(.18,Math.max(...s)*.38);bits=s.map(v=>v>=thr?"1":"0").join("");ch=decode(bits);bits+=" "+s.map(v=>v.toFixed(2)).join(",")}
-      chars.push({x:d.x0,x1:d.x1,ch,bits})});
+        const mx=Math.max(...s);const thr=Math.max(.18,mx*.4);bits=s.map((v,i)=>v>=(i===6?Math.max(thr,mx*.55):thr)?"1":"0").join("");ch=softDecode(s,mx);bits+=" "+s.map(v=>v.toFixed(2)).join(",")}
+      chars.push({x:d.x0,x1:d.x1,ch,bits,y1})});
     small.forEach(sm=>{const cy=cyOf(sm),yc=yAt(cxOf(sm));chars.push({x:sm.x0,x1:sm.x1,ch:cy>yc+RH*.22?".":":",y:cy})});
     chars.sort((a,b)=>a.x-b.x);
     // dos puntos: dos piezas pequeñas una encima de otra
-    const out=[];chars.forEach(c=>{const prev=out[out.length-1];if(c.ch===":"&&prev&&prev.ch===":"&&Math.abs(prev.x-c.x)<RH*.3)return;out.push(c)});
+    const out0=[];chars.forEach(c=>{const prev=out0[out0.length-1];if(c.ch===":"&&prev&&prev.ch===":"&&Math.abs(prev.x-c.x)<RH*.3)return;out0.push(c)});
+    const out=[];out0.forEach((c,i)=>{const prev=out0[i-1];
+      if(prev&&/\d/.test(prev.ch)&&/\d/.test(c.ch)&&c.x-prev.x1<RH*.7){const by=Math.max(prev.y1||0,c.y1||0);const gx0=prev.x1-RH*.06,gx1=c.x+RH*.06;
+        const dot=lit(M,gx0,by-RH*.16,gx1,by+RH*.02),mid=lit(M,gx0,by-RH*.7,gx1,by-RH*.3);if(dot>.22&&mid<.12)out.push({x:prev.x1,x1:c.x,ch:"."})}
+      out.push(c)});
     const digW=chars.filter(c=>/\d/.test(c.ch)).map(c=>c.x1-c.x).sort((a,b)=>a-b)[0]||RH*.5;
     const fields=[];let cur=null;out.forEach((c,i)=>{const gap=cur?c.x-cur.last:0;if(!cur||gap>Math.max(RH*.75,digW*1.1)){cur={s:"",last:c.x1};fields.push(cur)}cur.s+=c.ch;cur.last=c.x1});
     const fs=fields.map(f=>f.s.replace(/^[.:]+|[.:]+$/g,"")).filter(Boolean);
     const tf=fs.find(f=>/^\d{1,2}:\d{2}$/.test(f))||null;
     let time=null;if(tf){const[a,b]=tf.split(":");time=(+a)*60+(+b)}
-    const wf=fs.length>=2?fs[fs.length-1]:null;const weight=wf&&/^\d+(\.\d)?$/.test(wf)?parseFloat(wf):null;
-    return{fields:fs,time,weight,timeText:tf,weightText:wf,slope:L.a,debug:opt.debug?{W:M.W,H:M.H,row,line:L,Wd,digits:digits.map(d=>[d.x0,d.y0,d.w,d.h]),small:small.map(d=>[d.x0,d.y0,d.w,d.h]),chars:out.map(c=>c.ch+"@"+c.x+(c.bits?"/"+c.bits:""))}:undefined};
+    // tu báscula siempre muestra el peso con un decimal: si el punto no se ve en la foto, se recoloca
+    let wf=fs.length>=2?fs[fs.length-1]:null;if(wf&&/^\d{2,}$/.test(wf)&&opt.oneDecimal!==false)wf=wf.slice(0,-1)+"."+wf.slice(-1);const weight=wf&&/^\d+(\.\d)?$/.test(wf)?parseFloat(wf):null;
+    const bx=inRow.length?{x0:Math.min(...inRow.map(c=>c.x0)),x1:Math.max(...inRow.map(c=>c.x1)),y0:Math.min(...inRow.map(c=>c.y0)),y1:Math.max(...inRow.map(c=>c.y1))}:null;
+    return{fields:fs,time,weight,timeText:tf,weightText:wf,slope:L.a,box:bx,debug:opt.debug?{W:M.W,H:M.H,row,line:L,Wd,digits:digits.map(d=>[d.x0,d.y0,d.w,d.h]),small:small.map(d=>[d.x0,d.y0,d.w,d.h]),chars:out.map(c=>c.ch+"@"+c.x+(c.bits?"/"+c.bits:"")),mask:opt.debug?Array.from(M.m).join(""):null}:undefined};
   }
   return{read};
 })();
-
 const METHODS=["V60","Espresso","AeroPress","Otro"];
 const ROASTS=["Claro","Medio","Oscuro"];
 const TASTE=[["acid","Acidez","apagada","intensa"],["sweet","Dulzor","nada","mucho"],["bitter","Amargor","nada","mucho"],["body","Cuerpo","ligero","denso"]];
@@ -935,14 +956,20 @@ async function openCam(){
   let stream;try{stream=await navigator.mediaDevices.getUserMedia({audio:false,video:{facingMode:{ideal:"environment"},width:{ideal:1920},height:{ideal:1080}}})}
   catch(err){ui.scan={method:m,status:"nocam"};render();return}
   cam.stream=stream;const el=document.createElement("div");el.className="camov";el.setAttribute("role","dialog");el.setAttribute("aria-label","Cámara");
-  el.innerHTML=`<video autoplay playsinline muted></video><div class="camguide"><span>Encuadra la pantalla de la báscula</span></div><div class="cambar"><button class="btn ghost" data-cam="x">Cancelar</button><button class="btn primary" data-cam="shot">Leer</button></div>`;
+  el.innerHTML=`<video autoplay playsinline muted></video><div class="camguide"><span>Acerca el móvil hasta que los números llenen el recuadro</span></div><div class="cambar"><button class="btn ghost" data-cam="x">Cancelar</button><button class="btn primary" data-cam="shot">Leer</button></div>`;
   document.body.appendChild(el);cam.el=el;const v=el.querySelector("video");v.srcObject=stream;
   el.addEventListener("click",async e=>{const b=e.target.closest("[data-cam]");if(!b)return;
     if(b.dataset.cam==="x"){closeCam();return}
     if(!v.videoWidth)return;const c=document.createElement("canvas");c.width=v.videoWidth;c.height=v.videoHeight;c.getContext("2d").drawImage(v,0,0);
+    // zona del recuadro guía en coordenadas del vídeo (el vídeo se muestra entero, sin recortar)
+    let crop=null;try{const vr=v.getBoundingClientRect(),gr=el.querySelector(".camguide").getBoundingClientRect();const sc=Math.min(vr.width/v.videoWidth,vr.height/v.videoHeight);
+      const ox=vr.left+(vr.width-v.videoWidth*sc)/2,oy=vr.top+(vr.height-v.videoHeight*sc)/2;
+      const x0=Math.max(0,(gr.left-ox)/sc),y0=Math.max(0,(gr.top-oy)/sc),x1=Math.min(v.videoWidth,(gr.right-ox)/sc),y1=Math.min(v.videoHeight,(gr.bottom-oy)/sc);
+      const mx=(x1-x0)*.15,my=(y1-y0)*.3;if(x1>x0&&y1>y0)crop={x:Math.max(0,x0-mx),y:Math.max(0,y0-my),w:Math.min(v.videoWidth,x1+mx)-Math.max(0,x0-mx),h:Math.min(v.videoHeight,y1+my)-Math.max(0,y0-my)}}catch(err){}
     closeCam();ui.scan={method:m,status:"reading"};render();
     await new Promise(r=>setTimeout(r,30));
-    let r={time:null,weight:null};try{r=ScaleOCR.read(c)}catch(err){}
+    let r={time:null,weight:null};
+    try{if(crop)r=ScaleOCR.read(c,{crop});if(r.time==null||r.weight==null){const r2=ScaleOCR.read(c);if((r2.time!=null)+(r2.weight!=null)>(r.time!=null)+(r.weight!=null))r=r2}}catch(err){}
     // miniatura solo en memoria: desaparece con el panel y nunca se guarda
     let img=null;try{const k=Math.min(1,360/c.width);const t=document.createElement("canvas");t.width=Math.round(c.width*k);t.height=Math.round(c.height*k);t.getContext("2d").drawImage(c,0,0,t.width,t.height);img=t.toDataURL("image/jpeg",.7);t.width=t.height=0}catch(err){}
     c.width=c.height=0; // libera la imagen grande
