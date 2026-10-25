@@ -149,6 +149,79 @@ input.in,.field input,.field textarea{width:100%;min-width:0;background:var(--su
 .conf i.on{background:var(--ink)}
 .diag{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
 .diag li{padding-left:14px;position:relative;font-size:.92rem}
+.eqi{display:grid;grid-template-columns:5.4rem minmax(0,1fr);gap:10px;align-items:baseline}
+.eqi>span:last-child{font-weight:600}
+.curcof{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px}
+.curcof b{display:block;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.curcof.none{background:var(--accent-soft);border-color:transparent;justify-content:space-between}
+.curcof .btn{flex:0 0 auto}
+.bean{flex:none;width:12px;height:18px;border-radius:50%;background:var(--accent);transform:rotate(30deg)}
+.uses{display:grid;grid-template-columns:5.6rem minmax(0,1fr);gap:10px 10px;align-items:baseline}
+.uses .um{font-weight:600;font-size:.88rem}
+.uses .uc{display:flex;flex-direction:column;min-width:0}
+.uses .uc b{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cname{font-family:var(--display);font-size:1.1rem}
+.chip:disabled{opacity:.45;cursor:default}
+.roastline{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:end}
+.roastline .chips{flex-wrap:nowrap;gap:6px}
+.roastline .chip{padding:7px 10px}
+.roastline input[type="date"]{font-family:var(--body);font-size:.92rem;padding:10px 8px;min-height:44px}
+.base{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.autov{background:var(--sunk);border-radius:10px;padding:11px 8px;font-family:var(--mono);font-weight:600;font-size:1rem;min-height:46px;display:flex;align-items:center;justify-content:center;font-variant-numeric:tabular-nums}
+.tl{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 12px;display:flex;flex-direction:column;gap:10px}
+.tg{display:grid;grid-template-columns:3.4rem repeat(3,minmax(0,1fr));gap:8px;align-items:center}
+.tg .ph{font-size:.78rem;font-weight:700;text-align:center;line-height:1.2}
+.tg .ph.stop{color:var(--accent)}
+.tg .track{grid-column:2/5;position:relative;height:22px}
+.tg .bar{position:absolute;left:16.66%;right:50%;top:10px;height:3px;background:var(--water);border-radius:2px}
+.tg .drip{position:absolute;left:50%;right:16.67%;top:10px;height:3px;background:repeating-linear-gradient(90deg,var(--water) 0 5px,transparent 5px 9px)}
+.tg .dot{position:absolute;top:3px;width:17px;height:17px;border-radius:50%;background:var(--surface);border:3px solid var(--water);transform:translateX(-50%)}
+.tg .dot.stop{background:var(--accent);border-color:var(--accent);width:21px;height:21px;top:1px}
+.tg .dot.end{background:var(--water)}
+.tg .rl{font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600}
+.tg .na{text-align:center;color:var(--line);font-family:var(--mono)}
+.tg .unit{position:relative;min-width:0}
+.tg .unit input{width:100%;min-width:0;text-align:center;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:11px 20px 11px 6px;font-family:var(--mono);font-size:1rem}
+.tg .unit span{position:absolute;right:8px;top:50%;transform:translateY(-50%);font-family:var(--mono);font-size:.78rem;color:var(--muted)}
+.hbars{display:flex;flex-direction:column;gap:12px}
+.hb .hbh{display:flex;justify-content:space-between;gap:10px;font-size:.9rem;font-weight:600;margin-bottom:5px}
+.hb .hbh .hint{font-weight:500;text-align:right}
+.hbt{height:12px;background:var(--sunk);border-radius:6px;overflow:hidden}
+.hbt i{display:block;height:100%;background:var(--accent);border-radius:6px}
+.fresh-mini{display:flex;flex-direction:column;gap:6px;border-top:1px dashed var(--line);border-bottom:1px dashed var(--line);padding:10px 0}
+.fresh-mini .fresh-age{font-size:1.25rem}
+.card.comp{border-color:var(--s-mid)}
+.tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.tile{border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:10px 6px 9px;display:flex;flex-direction:column;align-items:center;gap:3px;min-width:0;position:relative}
+.tile .ti{width:30px;height:30px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center}
+.tile .ti svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.tile .tv{font-family:var(--mono);font-weight:600;font-size:1.02rem;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tile .tl2{font-size:.72rem;color:var(--muted);text-align:center;line-height:1.15}
+.tile.adj::after{content:"";position:absolute;top:7px;right:7px;width:7px;height:7px;border-radius:50%;background:var(--s-mid)}
+.tile[aria-expanded="true"]{background:var(--ink);border-color:var(--ink)}
+.tile[aria-expanded="true"] .tv{color:var(--bg)}.tile[aria-expanded="true"] .tl2{color:var(--bg);opacity:.75}
+.tdet{background:var(--sunk);border-radius:10px;padding:10px 12px;font-size:.9rem;display:flex;flex-direction:column;gap:6px}
+.tdet .adj{font-size:.8rem;color:var(--accent);font-weight:600}
+.tdet .dl{display:grid;grid-template-columns:auto 1fr;gap:3px 12px;font-size:.84rem}
+.tdet .dl span:nth-child(odd){color:var(--muted)}
+.card .sub{font-weight:700;font-size:.88rem;margin-top:4px}
+.tag2{font-size:.72rem;font-weight:700;color:var(--accent);background:var(--accent-soft);border-radius:999px;padding:1px 8px;margin-left:auto;margin-right:8px;white-space:nowrap}
+.guide{border-top:1px dashed var(--line);padding-top:10px}
+.guide:first-of-type{border-top:0;padding-top:0}
+.guide summary{font-weight:600;cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:8px}
+.guide summary::-webkit-details-marker{display:none}
+.guide summary::after{content:"+";font-family:var(--mono);color:var(--accent);font-weight:600}
+.guide[open] summary::after{content:"–"}
+.guide p{margin:8px 0 0;font-size:.9rem}
+.tsum{font-family:var(--mono);font-size:.82rem;color:var(--muted);border-top:1px dashed var(--line);padding-top:10px}
+.tsum b{color:var(--ink)}
+.diag .src{color:var(--muted);font-size:.8rem;font-weight:500}
+.xrow{display:flex;flex-direction:column;gap:6px}
+.xrow .chips{gap:6px}
+.xrow .chip{padding:6px 11px;font-size:.84rem}
+.xtags{display:flex;flex-wrap:wrap;gap:6px}
+.xtags span{font-size:.76rem;background:var(--sunk);border-radius:999px;padding:3px 9px}
+.xtags span.warn{background:var(--accent-soft)}
 .diag li::before{content:"";position:absolute;left:0;top:.55em;width:6px;height:6px;border-radius:50%;background:var(--accent)}
 .fresh-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}
 .fresh-age{font-family:var(--mono);font-size:1.6rem;font-weight:600;font-variant-numeric:tabular-nums}
@@ -163,10 +236,15 @@ input.in,.field input,.field textarea{width:100%;min-width:0;background:var(--su
 .chart text{font-family:var(--mono);font-size:10px;fill:var(--muted)}
 /* tabs */
 nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:8;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
-nav.tabs .in{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr)}
+nav.tabs .in{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);align-items:end}
 nav.tabs button{border:0;background:none;padding:10px 4px 12px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:.75rem;font-weight:600;color:var(--muted)}
 nav.tabs button svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 nav.tabs button[aria-current="page"]{color:var(--accent)}
+nav.tabs button.main{color:var(--ink);padding-top:0}
+nav.tabs .mainic{width:54px;height:54px;margin-top:-22px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;box-shadow:0 4px 14px rgba(0,0,0,.18);border:4px solid var(--surface)}
+nav.tabs .mainic svg{width:26px;height:26px}
+nav.tabs button.main[aria-current="page"]{color:var(--accent)}
+nav.tabs button.main[aria-current="page"] .mainic{box-shadow:0 0 0 3px var(--accent-soft),0 4px 14px rgba(0,0,0,.18)}
 @media (max-width:370px){.ptable{grid-template-columns:auto minmax(0,1fr) minmax(0,1fr)}.ptable .cum,.ptable .h.c{display:none}}
 @media (prefers-reduced-motion:no-preference){.entry .detail{animation:fade .18s ease}@keyframes fade{from{opacity:.4}to{opacity:1}}}
 </style>
@@ -182,7 +260,9 @@ nav.tabs button[aria-current="page"]{color:var(--accent)}
 </div>
 <nav class="tabs" aria-label="Secciones">
   <div class="in">
-    <button id="tab-new" data-tab="new"><svg viewBox="0 0 24 24"><path d="M5 9h11v5a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5z"/><path d="M16 10h1.5a2.5 2.5 0 0 1 0 5H16"/><path d="M9 3c-.6 1 .6 2 0 3M12.5 3c-.6 1 .6 2 0 3"/></svg>Registrar</button>
+    <button id="tab-cafe" data-tab="cafe"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="12" rx="6.5" ry="9" transform="rotate(35 12 12)"/><path d="M8.2 17.6c2.6-1.6 3.2-4.2 3.6-5.6s1.2-4 3.9-5.6"/></svg>Cafés</button>
+    <button id="tab-eq" data-tab="eq"><svg viewBox="0 0 24 24"><path d="M6 3h9l-1 4H7z"/><path d="M7.5 7l1 5h4l1-5"/><path d="M5 14h11v2a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4z"/><path d="M16 15h1.5a1.8 1.8 0 0 1 0 3.6H16"/></svg>Equipo</button>
+    <button id="tab-new" class="main" data-tab="new"><span class="mainic"><svg viewBox="0 0 24 24"><path d="M5 9h11v5a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5z"/><path d="M16 10h1.5a2.5 2.5 0 0 1 0 5H16"/><path d="M9 3c-.6 1 .6 2 0 3M12.5 3c-.6 1 .6 2 0 3"/></svg></span>Registrar</button>
     <button id="tab-hist" data-tab="hist"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M8.5 8.5h7M8.5 12h7M8.5 15.5h4"/></svg>Historial</button>
     <button id="tab-sug" data-tab="sug"><svg viewBox="0 0 24 24"><path d="M4 19h16"/><path d="M6 15l4-5 3 3 5-7"/><circle cx="18" cy="6" r="1.2"/></svg>Sugerencias</button>
   </div>
@@ -194,6 +274,21 @@ nav.tabs button[aria-current="page"]{color:var(--accent)}
 const METHODS=["V60","Espresso","AeroPress","Otro"];
 const ROASTS=["Claro","Medio","Oscuro"];
 const TASTE=[["acid","Acidez","apagada","intensa"],["sweet","Dulzor","nada","mucho"],["bitter","Amargor","nada","mucho"],["body","Cuerpo","ligero","denso"]];
+/* sensaciones en taza: inicio, final y notas captadas */
+const SENS=[
+ ["start","Inicio",["Agradable","Ácido / agrio","Plano"]],
+ ["finish","Final",["Limpio / dulce","Amargo","Astringente","Corto / aguado"]],
+ ["caught","Notas captadas",["Sí, claras","Algo","No"]],
+];
+/* extracción: depende del método */
+const EXTR=m=>{
+  const ch=["channel","Canalización",["No","Leve","Clara"]];
+  if(m==="Espresso")return[ch,["flow","Flujo",["Uniforme","Rápido","Lento","Irregular"]],["puck","Pastilla",["Firme y seca","Encharcada","Con agujeros"]]];
+  if(m==="V60")return[["flow","Drenaje",["Normal","Rápido","Lento / atascado"]],["bed","Lecho final",["Plano","Irregular / cráter","Café en paredes"]]];
+  if(m==="AeroPress")return[["flow","Prensado",["Normal","Muy fácil","Muy duro"]]];
+  return[["flow","Flujo",["Normal","Rápido","Lento"]]];
+};
+const XKEYS=["start","finish","caught","channel","flow","puck","bed"];
 const LS_KEY="bitacora-cafe-v1";
 const DAY=864e5;
 const $=s=>document.querySelector(s);
@@ -237,7 +332,7 @@ function freshness(age,roast,method){
     else if(age<=30)f={tag:"En su punto",color:"var(--s-top)",adj:{},tips:["Ventana óptima para espresso. No hace falta compensar."]};
     else if(age<=50)f={tag:"Empieza a perder aroma",color:"var(--s-good)",adj:{grind:-1},tips:["El café fluye más rápido. "+G(-1)+" para mantener el tiempo hasta parar."]};
     else f={tag:"Café antiguo",color:"var(--s-low)",adj:{grind:-2,ratio:-.2},tips:[G(-2)+" para frenar el caudal.","Ratio algo más corto para ganar cuerpo y sabor."]};
-    f.tips.push("Como la Bambino fija temperatura y presión, la compensación se hace solo con molienda y ratio.");
+    f.tips.push("En espresso la compensación se hace con molienda y ratio.");
     return f;
   }
   if(age<4)f={tag:"Recién tostado",color:"var(--s-mid)",adj:{bloom:+15,bloomMult:3},
@@ -433,12 +528,26 @@ async function importFile(file){
   toast(added?`Importadas ${added} preparaciones`:"No había preparaciones nuevas");
 }
 const newId=()=>"b"+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
-const isDemo=()=>store.ready&&store.real.length===0;
-const brews=()=>(isDemo()?DEMO:store.real).slice().sort((a,b)=>b.ts-a.ts);
+const realBrews=()=>store.real.filter(b=>!b.kind);
+const isDemo=()=>store.ready&&realBrews().length===0;
+const brews=()=>(isDemo()?DEMO:realBrews()).slice().sort((a,b)=>b.ts-a.ts);
+/* cafés: documentos con kind:"coffee"; methods = métodos en los que está en uso ahora */
+/* equipo: documento único kind:"setup" */
+const SETUP_DEFAULT={grinder:"MiCoffee DF54",espMachine:"Sage Bambino",v60Dripper:"Hario V60 01 (1 taza)",v60Filter:"Filtros Hario V60 01",kettle:"Hervidor eléctrico de cuello de cisne",aeroHave:false,aeroModel:"AeroPress"};
+const setupDoc=()=>store.real.find(b=>b.kind==="setup")||null;
+const setup=()=>Object.assign({},SETUP_DEFAULT,setupDoc()||{});
+const CMETHODS_ALL=["Espresso","V60","AeroPress","Otro"];
+/* AeroPress solo aparece cuando la activas en Equipo */
+const hasMethod=m=>m!=="AeroPress"||!!setup().aeroHave;
+const coffeesAll=()=>store.real.filter(b=>b.kind==="coffee").sort((a,b)=>(b.createdTs||0)-(a.createdTs||0));
+const coffeesActive=()=>coffeesAll().filter(c=>!c.finished);
+const currentCoffee=m=>coffeesActive().find(c=>(c.methods||[]).includes(m))||null;
+const coffeeAge=c=>c&&c.roastDate?daysSince(c.roastDate,Date.now()):null;
+const sameCoffee=(b,c)=>!!c&&(b.coffeeId?b.coffeeId===c.id:(b.coffee||"").trim().toLowerCase()===(c.name||"").trim().toLowerCase());
 const methodsIn=list=>[...METHODS,...new Set(list.map(b=>b.method).filter(m=>!METHODS.includes(m)))].filter(m=>list.some(b=>b.method===m));
 
 /* ---------- formulario y vertidos ---------- */
-const ui={tab:"new",histFilter:"Todos",sugMethod:null,chartParam:"ratio",expanded:null,confirmDel:null,editingId:null,form:null,freshCoffee:null,applyFresh:true};
+const ui={cafeEdit:null,cafeForm:null,showDone:false,sugScope:null,tab:"new",histFilter:"Todos",sugMethod:null,chartParam:"ratio",expanded:null,confirmDel:null,editingId:null,form:null,freshCoffee:null,applyFresh:true};
 function pvFrom(pours){return{auto:false,mult:null,bloomG:String(pours[0].g),rows:pours.slice(1).map(p=>({t:fmtTime(p.t),g:String(p.g)}))}}
 function defaultPv(f,n){const pv={auto:true,mult:2.5,bloomG:"",rows:Array.from({length:n||3},()=>({t:"",g:""})),bT:40};f.pv=pv;distribute(f);return pv}
 function distribute(f){
@@ -457,15 +566,16 @@ function pvToPours(pv){
   return rows.every(r=>r.t!=null&&r.g!=null)?rows:null;
 }
 function blankForm(method){
-  const last=store.real.filter(b=>b.method===method).sort((a,b)=>b.ts-a.ts)[0];
-  const f={method,coffee:"",roast:"",roastDate:"",dose:"",water:"",grind:"",temp:"",time:"",bloom:"",score:null,acid:null,sweet:null,bitter:null,body:null,notes:"",pv:null};
-  if(last){["coffee","roast","roastDate","dose","water","grind","temp","bloom"].forEach(k=>f[k]=last[k]??"");f.time=last.time!=null?fmtTime(last.time):""}
+  const last=realBrews().filter(b=>b.method===method).sort((a,b)=>b.ts-a.ts)[0];
+  const f={method,coffee:"",roast:"",roastDate:"",dose:"",water:"",grind:"",temp:"",time:"",bloom:"",score:null,acid:null,sweet:null,bitter:null,body:null,notes:"",start:null,finish:null,caught:null,channel:null,flow:null,puck:null,bed:null,pv:null};
+  if(last){["coffee","roast","roastDate","dose","water","grind","temp","bloom"].forEach(k=>f[k]=last[k]??"");f.time=last.time!=null?(method==="Espresso"?String(Math.round(last.time)):fmtTime(last.time)):""}
   if(method==="V60"){if(last&&poursOf(last))f.pv=pvFrom(last.pours);else defaultPv(f,3)}
   return f;
 }
 function formFrom(b){
-  const f=Object.assign({},b);f.time=b.time!=null?fmtTime(b.time):"";
+  const f=Object.assign({},b);f.time=b.time!=null?(b.method==="Espresso"?String(Math.round(b.time)):fmtTime(b.time)):"";
   ["dose","water","grind","temp","bloom","roastDate","roast","coffee","stopW"].forEach(k=>f[k]=b[k]??"");
+  XKEYS.forEach(k=>f[k]=b[k]||null);
   f.pv=null;if(b.method==="V60"){if(poursOf(b))f.pv=pvFrom(b.pours);else defaultPv(f,3)}
   return f;
 }
@@ -567,55 +677,160 @@ function suggestion(method,list,fr){
   }
   return{an,rec,notes};
 }
+/* lee las notas de cata en texto libre (para registros antiguos o cuando no se marcan los chips) */
+function parseNotes(txt){
+  const o={};if(!txt)return o;
+  const s=" "+String(txt).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"")+" ";
+  const neg=w=>new RegExp("(sin|no|nada|ni)\\s+(\\w+\\s+){0,3}"+w).test(s);
+  // canalización
+  if(/canaliz|channel/.test(s))o.channel=neg("(canaliz|channel)")?"No":/(leve|poca|algo|ligera|un poco)\s+(\w+\s+){0,2}(canaliz|channel)|(canaliz|channel)\w*\s+(leve|ligera)/.test(s)?"Leve":"Clara";
+  // final
+  const fin=s.match(/(final|retrogusto|postgusto|regusto|al terminar|termina)[^.;\n]{0,40}/g)||[];
+  const finTxt=fin.join(" ");
+  if(/amarg/.test(finTxt)&&!/(sin|no|nada)\s+(\w+\s+){0,2}amarg/.test(finTxt))o.finish="Amargo";
+  else if(/astring|seco|reseca|aspero/.test(finTxt))o.finish="Astringente";
+  else if(/corto|aguado|acuoso|se va|desaparece/.test(finTxt))o.finish="Corto / aguado";
+  else if(/limpio|dulce|agradable|largo|bueno|bien|redondo/.test(finTxt))o.finish="Limpio / dulce";
+  else if(/amarg/.test(s)&&!neg("amarg"))o.finish="Amargo";
+  else if(/astring/.test(s)&&!neg("astring"))o.finish="Astringente";
+  // inicio
+  const ini=(s.match(/(inicio|entrada|ataque|al principio|primer sorbo|empieza)[^.;\n]{0,40}/g)||[]).join(" ");
+  if(ini){
+    if(/agri|acid|punzante|salad/.test(ini)&&!/(sin|no)\s+(\w+\s+){0,2}(agri|acid)/.test(ini))o.start="Ácido / agrio";
+    else if(/plano|apagado|soso|sin sabor|flojo/.test(ini))o.start="Plano";
+    else if(/agradable|bueno|bien|dulce|brillante|jugoso|rico|limpio/.test(ini))o.start="Agradable";
+  }else if(/agrio|salado/.test(s)&&!neg("(agrio|salado)"))o.start="Ácido / agrio";
+  // notas captadas
+  if(/(no|sin|ningun\w*)\s+(\w+\s+){0,3}notas|no (he )?(capt|sent|not|detect)/.test(s))o.caught="No";
+  else if(/(algo|poco|ligera\w*|leve\w*|tenue\w*)\s+(\w+\s+){0,2}(notas|a )|apenas/.test(s)&&/notas/.test(s))o.caught="Algo";
+  else if(/notas? (a|de)\s+\w|melocot|chocolat|cacao|caramel|frut|citric|floral|jazmin|bergamot|fresa|cereza|nuez|avellan|miel|panela|limon|naranja|mora|arandan|vino|ciruela|manzana|pera|uva|te negro|vainilla|almendra|tofe|toffee/.test(s))o.caught="Sí, claras";
+  return o;
+}
+/* valor efectivo: el chip marcado manda; si no, lo leído en las notas */
+function sens(b){
+  const p=parseNotes(b.notes);const o={},from={};
+  if(b.method!=="Espresso"){delete p.channel;delete p.puck}
+  XKEYS.forEach(k=>{if(k==="channel"&&b.method!=="Espresso")return;if(b[k]){o[k]=b[k];from[k]="chip"}else if(p[k]){o[k]=p[k];from[k]="notas"}});
+  return{v:o,from};
+}
 function diagnose(b){
   const t=[];if(!b)return t;
-  const a=b.acid,s=b.sweet,bi=b.bitter,bo=b.body;const esp=b.method==="Espresso";const fine="En el DF54, "+df54(-1,b.method),coarse="En el DF54, "+df54(1,b.method);
-  if(a!=null&&bi!=null&&a>=4&&bi<=2)t.push(esp?"Acidez alta y poco amargor: suele ser subextracción. "+fine+" o alarga el ratio (más bebida en taza).":"Acidez alta y poco amargor: suele ser subextracción. Prueba a moler un poco más fino o subir la temperatura 1–2 °C.");
-  if(bi!=null&&bi>=4)t.push(esp?"Amargor marcado: probable sobreextracción. "+coarse+" o para la máquina antes (ratio más corto).":"Amargor marcado: probable sobreextracción. "+coarse+", baja la temperatura o acorta el tiempo.");
-  if(bo!=null&&bo<=2)t.push("Poco cuerpo: sube la dosis o usa un ratio más corto (menos agua por gramo).");
-  if(bo!=null&&bo>=5&&b.method!=="Espresso")t.push("Cuerpo muy denso: un ratio algo más largo puede dar más claridad.");
+  const a=b.acid,s=b.sweet,bi=b.bitter,bo=b.body;const esp=b.method==="Espresso",v60=b.method==="V60";
+  const fine="En el DF54, "+df54(-1,b.method),coarse="En el DF54, "+df54(1,b.method);
+  const {v,from}=sens(b);const tag=k=>from[k]==="notas"?" <span class=\"src\">(leído de tus notas)</span>":"";
+  const ch=v.channel==="Clara"||v.channel==="Leve"||v.puck==="Con agujeros"||v.bed==="Irregular / cráter"||v.flow==="Irregular";
+  const bitterFin=v.finish==="Amargo",sourStart=v.start==="Ácido / agrio";
+  const strong=v.channel==="Clara"||v.puck==="Con agujeros"||(ch&&sourStart&&bitterFin);
+  let over=false,under=false;
+  // 1. extracción: lo primero, porque si hubo canalización la taza no refleja la receta
+  if(ch){
+    const why=v.channel?(v.channel==="Leve"?"Canalización leve":"Canalización clara")+tag("channel"):v.puck==="Con agujeros"?"Pastilla con agujeros"+tag("puck"):v.bed?"Lecho irregular"+tag("bed"):"Flujo irregular"+tag("flow");
+    t.push(why+": el agua ha pasado por caminos preferentes, así que parte del café se sobreextrae y otra queda cruda."+(strong&&(sourStart||bitterFin||v.finish==="Astringente")?" "+(sourStart&&bitterFin?"Por eso notas a la vez inicio ácido y final amargo.":"Lo más probable es que el "+(bitterFin?"final amargo":v.finish==="Astringente"?"final astringente":"inicio ácido")+" venga de ahí, así que no cambies la molienda por eso todavía."):"")+" "+(esp?"Antes de tocar la molienda, revisa la preparación: rompe grumos (WDT), distribuye bien y tampa nivelado. Si además fluyó rápido, "+df54(-1,b.method)+".":v60?"Remueve bien el bloom para mojar todo el café, vierte suave en el centro sin tocar las paredes y da un giro suave al final para dejar el lecho plano.":"Remueve bien al principio para mojar todo el café y prensa de forma lenta y constante.")+(v.channel==="Clara"?" Esta taza no cuenta para la receta sugerida.":""));
+  }
+  // 2. flujo / pastilla / drenaje
+  if(esp&&v.flow==="Rápido")t.push("Flujo rápido"+tag("flow")+": "+fine+" o sube un poco la dosis.");
+  if(esp&&v.flow==="Lento")t.push("Flujo lento"+tag("flow")+": "+coarse+".");
+  if(esp&&v.puck==="Encharcada")t.push("Pastilla encharcada"+tag("puck")+": suele indicar poca dosis para el cestillo (queda mucho espacio arriba). Prueba +0,5–1 g o "+df54(-1,b.method)+".");
+  if(v60&&v.flow==="Lento / atascado")t.push("Drenaje lento"+tag("flow")+": demasiados finos o molienda fina. "+coarse+" y agita menos en los vertidos.");
+  if(v60&&v.flow==="Rápido")t.push("Drenaje rápido"+tag("flow")+": "+fine+" o vierte más despacio para alargar el contacto.");
+  if(v60&&v.bed==="Café en paredes")t.push("Café pegado en las paredes"+tag("bed")+": esos granos apenas se extraen. Vierte más al centro y da un giro suave al final.");
+  if(b.method==="AeroPress"&&v.flow==="Muy duro")t.push("Prensado muy duro"+tag("flow")+": "+coarse+".");
+  if(b.method==="AeroPress"&&v.flow==="Muy fácil")t.push("Prensado muy fácil"+tag("flow")+": "+fine+".");
+  // 3. sabor: escalas + inicio/final
+  if(!strong){
+    if(bitterFin||(bi!=null&&bi>=4)){over=true;
+      t.push((bitterFin?"Final amargo"+tag("finish"):"Amargor marcado")+(bitterFin&&bi!=null&&bi>=4?" y amargor alto":"")+": probable sobreextracción. "+(esp?coarse+" o para la máquina antes (ratio más corto).":coarse+", baja la temperatura 1–2 °C o acorta el tiempo."))}
+    if(!over&&(sourStart||(a!=null&&bi!=null&&a>=4&&bi<=2))){under=true;
+      t.push((sourStart?"Inicio ácido o agrio"+tag("start"):"Acidez alta y poco amargor")+": suele ser subextracción. "+(esp?fine+" o alarga el ratio (más bebida en taza).":fine+" o sube la temperatura 1–2 °C."))}
+  }
+  if(v.finish==="Astringente"&&!strong)t.push("Final astringente o seco"+tag("finish")+": "+(esp?"suele venir de canalización o de moler demasiado fino. "+coarse+" y cuida la distribución.":"suele venir de agitar demasiado o de muchos finos. Vierte más suave y "+df54(1,b.method)+"."));
+  if(v.finish==="Corto / aguado"&&!under)t.push("Final corto o aguado"+tag("finish")+": falta extracción o concentración. "+(esp?fine+" o ratio más corto.":"Ratio más corto (menos agua por gramo) o "+df54(-1,b.method)+"."));
+  if(bo!=null&&bo<=2&&v.finish!=="Corto / aguado")t.push("Poco cuerpo: sube la dosis o usa un ratio más corto (menos agua por gramo).");
+  if(bo!=null&&bo>=5&&!esp)t.push("Cuerpo muy denso: un ratio algo más largo puede dar más claridad.");
   if(s!=null&&s<=2&&!t.length)t.push("Falta dulzor sin defectos claros: mueve el DF54 de "+(esp?"medio en medio número":gstep(b.method)+" en "+gstep(b.method)+" números")+" hasta encontrar el punto dulce.");
+  if(v.caught==="No"&&!t.length)t.push("No captaste notas"+tag("caught")+" y no hay un defecto claro: suele faltar algo de extracción. "+(esp?fine+".":"Prueba "+df54(-1,b.method)+" o +1 °C.")+" Si el café tiene más de un mes, puede ser que haya perdido aroma.");
+  if(v.finish==="Limpio / dulce"&&v.caught==="Sí, claras"&&!t.length)t.push("Final limpio y notas claras: la receta está en su punto. Repítela y cambia una sola variable cada vez si quieres afinar.");
+  const anyData=[a,s,bi,bo].some(x=>x!=null)||Object.keys(v).length;
   if(!t.length&&b.score>=8)t.push("Taza equilibrada. Repite la receta y cambia una sola variable cada vez para afinar.");
-  if(!t.length)t.push("Registra acidez, dulzor y amargor para obtener un diagnóstico más preciso.");
+  if(!t.length&&anyData)t.push("Sin defectos claros en esta taza (nota "+b.score+"). Para subir la nota, cambia una sola variable: "+(esp?"medio número de molienda o 2 g de bebida en taza.":"un paso de molienda o 1 °C de temperatura.")+" Si tienes dudas sobre el final o el inicio, márcalo en Sensaciones y el diagnóstico será más concreto.");
+  if(!t.length)t.push("Esta taza no tiene acidez, dulzor, amargor ni sensaciones registradas. Márcalas al registrar para obtener un diagnóstico.");
   return t;
+}
+/* patrones en las últimas tazas de un método */
+function patterns(list){
+  const last=list.slice(0,10);if(last.length<3)return[];
+  const S=last.map(b=>({b,v:sens(b).v}));const out=[];const n=last.length;const avg=a=>a.reduce((x,y)=>x+y,0)/a.length;
+  const cnt=f=>S.filter(f).length;
+  const bit=cnt(o=>o.v.finish==="Amargo");if(bit>=2)out.push("Final amargo en "+bit+" de tus últimas "+n+" tazas. Tu molienda de base tiende a quedarse fina para este café: prueba la receta sugerida un paso más gruesa.");
+  const sour=cnt(o=>o.v.start==="Ácido / agrio");if(sour>=2)out.push("Inicio ácido o agrio en "+sour+" de "+n+". Tiende a faltar extracción: un paso más fino o, en filtro, +1 °C.");
+  const ast=cnt(o=>o.v.finish==="Astringente");if(ast>=2)out.push("Final astringente en "+ast+" de "+n+". Revisa la agitación y la distribución antes que la receta.");
+  const chY=S.filter(o=>o.v.channel==="Leve"||o.v.channel==="Clara"),chN=S.filter(o=>o.v.channel==="No");
+  if(chY.length>=2)out.push("Canalización en "+chY.length+" de "+n+(chN.length?" · nota media "+r1(avg(chY.map(o=>o.b.score)))+" con canalización frente a "+r1(avg(chN.map(o=>o.b.score)))+" sin ella":"")+". Mejorar la preparación del café es ahora lo que más te subiría la nota.");
+  const cY=S.filter(o=>o.v.caught==="Sí, claras"),cN=S.filter(o=>o.v.caught==="No");
+  if(cY.length&&cN.length)out.push("Captas notas claras en "+cY.length+" de "+n+" tazas (nota media "+r1(avg(cY.map(o=>o.b.score)))+"). Compara su receta con la de las tazas sin notas ("+r1(avg(cN.map(o=>o.b.score)))+").");
+  return out;
 }
 
 /* ---------- vistas ---------- */
 function demoBanner(){return isDemo()?`<div class="banner"><b>Datos de ejemplo.</b> Así se verá tu bitácora. Desaparecen en cuanto guardes tu primera preparación.</div>`:""}
 function ageText(iso){const d=daysSince(iso,Date.now());return d==null?"":d===0?"tostado hoy":d===1?"hace 1 día":"hace "+d+" días"}
 
+function roastTxt(c){const a=coffeeAge(c);return [c.roast?"Tueste "+c.roast.toLowerCase():"",a!=null?(a===0?"tostado hoy":a===1?"1 día desde el tueste":a+" días desde el tueste"):"sin fecha de tueste"].filter(Boolean).join(" · ")}
+function coffeeLine(f){
+  if(ui.editingId)return `<section class="block"><div class="label">Café</div><div class="curcof"><div style="min-width:0"><b>${esc(f.coffee||"Sin café")}</b><div class="hint">${esc([f.roast?"Tueste "+f.roast.toLowerCase():"",f.roastDate?"tostado el "+new Date(f.roastDate+"T12:00").toLocaleDateString("es-ES",{day:"numeric",month:"short"}):""].filter(Boolean).join(" · "))||"Café guardado con esta preparación"}</div></div></div></section>`;
+  const c=currentCoffee(f.method);
+  if(!c)return `<section class="block"><div class="label">Café</div><div class="curcof none"><div><b>Sin café asignado a ${esc(f.method)}</b><div class="hint">Elige en la pestaña Cafés cuál estás usando.</div></div><button class="btn ghost small" data-act="go-cafe">Asignar</button></div></section>`;
+  return `<section class="block"><div class="label">Café</div><div class="curcof"><span class="bean"></span><div style="min-width:0;flex:1"><b>${esc(c.name)}</b><div class="hint">${esc(roastTxt(c))}</div></div><button class="btn ghost small" data-act="go-cafe">Cambiar</button></div></section>`;
+}
+/* V60: el agua total es la suma del bloom y los vertidos */
+function syncWater(f){if(f.method!=="V60"||!f.pv)return;const s=(num(f.pv.bloomG)||0)+f.pv.rows.reduce((a,r)=>a+(num(r.g)||0),0);f.water=s?String(s):""}
+function updRatio(f){const r=num(f.dose)&&num(f.water)?num(f.water)/num(f.dose):null;const v=$("#ratio-v");if(v)v.textContent=r?"1:"+r.toFixed(1):"–";const w=$("#water-v");if(w)w.textContent=num(f.water)!=null?Math.round(num(f.water))+" g":"–"}
+function dripTxt(f){const a=num(f.stopW),b=num(f.water);return a!=null&&b!=null?(b-a>=0?"+":"")+r1(b-a)+" g":"–"}
+function xchips(f,k,l,opts){return `<div class="xrow"><span class="hint">${l}</span><div class="chips" role="group" aria-label="${l}">${opts.map(o=>`<button class="chip" data-act="xchip" data-k="${k}" data-v="${esc(o)}" aria-pressed="${f[k]===o}">${esc(o)}</button>`).join("")}</div></div>`}
 function viewNew(){
+  if(!ui.editingId&&!hasMethod(ui.form.method))ui.form=blankForm("V60");
   const f=ui.form;const isEsp=f.method==="Espresso";const v60=f.method==="V60";
+  if(v60&&f.pv)syncWater(f);
   const ratio=num(f.dose)&&num(f.water)?num(f.water)/num(f.dose):null;
-  const coffees=[...new Set(store.real.map(b=>b.coffee).filter(Boolean))];
   return `<div class="view">
   <section class="block"><h2>${ui.editingId?"Editar preparación":"Nueva preparación"}</h2>
     <div class="label">Método</div>
-    <div class="chips" role="group" aria-label="Método">${METHODS.map(m=>`<button class="chip" data-act="method" data-v="${m}" aria-pressed="${f.method===m}">${m}</button>`).join("")}</div>
-    ${!ui.editingId&&store.real.some(b=>b.method===f.method)?`<div class="hint">Rellenado con tu última receta de ${esc(f.method)}.</div>`:""}
+    <div class="chips" role="group" aria-label="Método">${METHODS.filter(m=>hasMethod(m)||f.method===m).map(m=>`<button class="chip" data-act="method" data-v="${m}" aria-pressed="${f.method===m}">${m}</button>`).join("")}</div>
+    ${!ui.editingId&&realBrews().some(b=>b.method===f.method)?`<div class="hint">Rellenado con tu última receta de ${esc(f.method)}.</div>`:""}
   </section>
-  <section class="block"><div class="label">Café</div>
-    <div class="field txt"><label class="hint" for="f-coffee">Origen o nombre</label><input id="f-coffee" data-f="coffee" list="dl-coffee" placeholder="Etiopía Guji, natural" value="${esc(f.coffee)}"><datalist id="dl-coffee">${coffees.map(c=>`<option value="${esc(c)}">`).join("")}</datalist></div>
-    <div class="field"><span class="hint">Tueste</span><div class="chips">${ROASTS.map(r=>`<button class="chip" data-act="roast" data-v="${r}" aria-pressed="${f.roast===r}">${r}</button>`).join("")}</div></div>
-    <div class="field"><label class="hint" for="f-roastDate">Fecha de tueste <span>(opcional)</span></label>
-      <div class="row" style="flex-wrap:nowrap"><input id="f-roastDate" data-f="roastDate" type="date" max="${todayISO()}" value="${esc(f.roastDate)}" style="flex:1">${f.roastDate?`<button class="btn ghost small" style="flex:0 0 auto" data-act="clear-roast">Quitar</button>`:""}</div>
-      <span class="age" id="age-v">${esc(ageText(f.roastDate))}</span></div>
-  </section>
+  ${coffeeLine(f)}
   <section class="block"><div class="label">Receta</div>
-    <div class="grid2">
-      <div class="field"><label class="hint" for="f-dose">Dosis café (g)</label><input id="f-dose" data-f="dose" inputmode="decimal" placeholder="${isEsp?"18":"15"}" value="${esc(f.dose)}"></div>
-      <div class="field"><label class="hint" for="f-water">${isEsp?"Bebida final (g)":"Agua total (g)"}</label><input id="f-water" data-f="water" inputmode="decimal" placeholder="${isEsp?"36":"240"}" value="${esc(f.water)}"></div>
+    <div class="base">
+      <div class="field"><label class="hint" for="f-dose">Dosis (g)</label><input id="f-dose" data-f="dose" inputmode="decimal" placeholder="${isEsp?"18":"15"}" value="${esc(f.dose)}"></div>
+      <div class="field"><label class="hint" for="f-grind">Molienda DF54</label><input id="f-grind" data-f="grind" inputmode="decimal" placeholder="${DF54_START[f.method]?DF54_START[f.method][f.roast||"Medio"]:"50"}" value="${esc(f.grind)}"></div>
+      <div class="field"><span class="hint">Ratio <span style="opacity:.7">auto</span></span><div class="autov" id="ratio-v">${ratio?"1:"+ratio.toFixed(1):"–"}</div></div>
     </div>
-    <div class="ratio"><span class="label">Ratio</span><span class="v" id="ratio-v">${ratio?"1:"+ratio.toFixed(1):"–"}</span></div>
-    <div class="grid2">
-      <div class="field"><label class="hint" for="f-grind">Molienda DF54 (0–90)</label><input id="f-grind" data-f="grind" inputmode="decimal" placeholder="${DF54_START[f.method]?DF54_START[f.method][f.roast||"Medio"]:"50"}" value="${esc(f.grind)}"></div>
-      ${isEsp?"":`<div class="field"><label class="hint" for="f-temp">Temperatura (°C)</label><input id="f-temp" data-f="temp" inputmode="decimal" placeholder="94" value="${esc(f.temp)}"></div>`}
-      <div class="field"><label class="hint" for="f-time">${isEsp?"Tiempo hasta parar (s)":"Tiempo total (m:ss)"}</label><input id="f-time" data-f="time" inputmode="decimal" placeholder="${isEsp?"28":"3:00"}" value="${esc(f.time)}"></div>
-      ${isEsp?`<div class="field"><label class="hint" for="f-stopW">Peso al parar (g) <span>(opcional)</span></label><input id="f-stopW" data-f="stopW" inputmode="decimal" placeholder="33" value="${esc(f.stopW||"")}"></div>`:""}
-      ${v60?"":`<div class="field"><label class="hint" for="f-bloom">${isEsp?"Preinfusión (s)":"Bloom (s)"}</label><input id="f-bloom" data-f="bloom" inputmode="numeric" placeholder="${isEsp?"5":"30"}" value="${esc(f.bloom)}"></div>`}
+    <div class="hint" style="margin-top:-4px">El ratio se calcula con ${isEsp?"la bebida final":"el agua total"}.</div>
+    ${isEsp?`<div class="tl">
+      <div class="label">Extracción en el tiempo</div>
+      <div class="tg">
+        <span></span><span class="ph">Preinfusión</span><span class="ph stop">Paro la máquina</span><span class="ph">Bebida final</span>
+        <span></span><div class="track"><span class="bar"></span><span class="drip"></span><span class="dot" style="left:16.66%"></span><span class="dot stop" style="left:50%"></span><span class="dot end" style="left:83.33%"></span></div>
+        <span class="rl">Tiempo</span>
+        <div class="unit"><input id="f-bloom" data-f="bloom" inputmode="numeric" placeholder="5" value="${esc(f.bloom)}" aria-label="Preinfusión en segundos"><span>s</span></div>
+        <div class="unit"><input id="f-time" data-f="time" inputmode="decimal" placeholder="28" value="${esc(f.time)}" aria-label="Tiempo hasta parar en segundos"><span>s</span></div>
+        <span class="na">–</span>
+        <span class="rl">Peso</span>
+        <span class="na">–</span>
+        <div class="unit"><input id="f-stopW" data-f="stopW" inputmode="decimal" placeholder="33" value="${esc(f.stopW||"")}" aria-label="Peso al parar en gramos"><span>g</span></div>
+        <div class="unit"><input id="f-water" data-f="water" inputmode="decimal" placeholder="36" value="${esc(f.water)}" aria-label="Bebida final en gramos"><span>g</span></div>
+      </div>
+    </div>`:v60?`<div class="base">
+      <div class="field"><label class="hint" for="f-temp">Temperatura (°C)</label><input id="f-temp" data-f="temp" inputmode="decimal" placeholder="94" value="${esc(f.temp)}"></div>
+      <div class="field"><label class="hint" for="f-time">Tiempo total</label><input id="f-time" data-f="time" inputmode="decimal" placeholder="3:00" value="${esc(f.time)}"></div>
+      <div class="field"><span class="hint">Agua total <span style="opacity:.7">auto</span></span><div class="autov" id="water-v">${num(f.water)!=null?Math.round(num(f.water))+" g":"–"}</div></div>
     </div>
-    <div class="hint">DF54: menor número = más fino.${DF54_START[f.method]?` Punto de partida para ${esc(f.method)} con tueste ${(f.roast||"Medio").toLowerCase()}: ${DF54_START[f.method][f.roast||"Medio"]} (rango habitual ${DF54_START[f.method].range}).`:""}</div>
-    ${isEsp?`<div class="hint">Sage Bambino: temperatura y presión fijas, no se registran. El tiempo es hasta que paras la máquina; pesa la bebida final cuando deje de gotear. Si anotas también el peso al parar, calcularé tu goteo medio.</div>`:""}
+    <div class="hint" style="margin-top:-4px">El agua total es la suma del bloom y los vertidos.</div>`:`<div class="grid2">
+      <div class="field"><label class="hint" for="f-water">Agua total (g)</label><input id="f-water" data-f="water" inputmode="decimal" placeholder="240" value="${esc(f.water)}"></div>
+      <div class="field"><label class="hint" for="f-temp">Temperatura (°C)</label><input id="f-temp" data-f="temp" inputmode="decimal" placeholder="94" value="${esc(f.temp)}"></div>
+      <div class="field"><label class="hint" for="f-time">Tiempo total (m:ss)</label><input id="f-time" data-f="time" inputmode="decimal" placeholder="3:00" value="${esc(f.time)}"></div>
+      ${v60?"":`<div class="field"><label class="hint" for="f-bloom">Bloom (s)</label><input id="f-bloom" data-f="bloom" inputmode="numeric" placeholder="30" value="${esc(f.bloom)}"></div>`}
+    </div>`}
   </section>
   ${v60&&f.pv?`<section class="block"><div class="label">Vertidos</div>
     <div class="pours">
@@ -628,7 +843,12 @@ function viewNew(){
     <div class="hint">Satisfacción global</div>
     <div class="score" role="group" aria-label="Nota de 1 a 10">${[1,2,3,4,5,6,7,8,9,10].map(n=>`<button data-act="score" data-v="${n}" class="${f.score===n?"on":""}" style="${f.score===n?"background:"+scoreColor(n):""}" aria-pressed="${f.score===n}">${n}</button>`).join("")}</div>
     <div class="taste">${TASTE.map(([k,l,a,b])=>`<span>${l}</span><div class="seg" role="group" aria-label="${l}">${[1,2,3,4,5].map(n=>`<button data-act="taste" data-k="${k}" data-v="${n}" class="${f[k]===n?"on":""}" aria-pressed="${f[k]===n}">${n}</button>`).join("")}</div><div class="scale-ends"><span>${a}</span><span>${b}</span></div>`).join("")}</div>
+    <div class="hint" style="margin-top:4px"><b>Sensaciones</b> · toca otra vez para desmarcar</div>
+    ${SENS.filter(x=>!(isEsp&&x[0]==="caught")).map(([k,l,opts])=>xchips(f,k,l,opts)).join("")}
     <div class="field"><label class="hint" for="f-notes">Notas de cata</label><textarea id="f-notes" data-f="notes" placeholder="Melocotón, final limpio, algo astringente…">${esc(f.notes)}</textarea></div>
+  </section>
+  <section class="block"><div class="label">Extracción</div>
+    ${EXTR(f.method).map(([k,l,opts])=>xchips(f,k,l,opts)).join("")}
   </section>
   <div class="row">${ui.editingId?`<button class="btn ghost" data-act="cancel-edit">Cancelar</button>`:""}<button class="btn primary" data-act="save">${ui.editingId?"Guardar cambios":"Guardar preparación"}</button></div>
   ${f.score==null?`<div class="hint">Elige una nota de 1 a 10 para poder guardar.</div>`:""}
@@ -642,6 +862,11 @@ function recipeLine(b){
   return p.join(" · ");
 }
 function pourLine(b){const p=poursOf(b);if(!p)return"";return p.map((x,i)=>(i?fmtTime(x.t)+" ":"Bloom ")+x.g+" g").join(" → ")}
+function xtags(b){const {v,from}=sens(b);const lab={start:"Inicio",finish:"Final",caught:"Notas",channel:"Canalización",flow:b.method==="V60"?"Drenaje":b.method==="AeroPress"?"Prensado":"Flujo",puck:"Pastilla",bed:"Lecho"};
+  const bad=["Ácido / agrio","Plano","Amargo","Astringente","Corto / aguado","No","Leve","Clara","Rápido","Lento","Irregular","Encharcada","Con agujeros","Lento / atascado","Irregular / cráter","Café en paredes","Muy fácil","Muy duro"];
+  const ks=XKEYS.filter(k=>v[k]);if(!ks.length)return"";
+  const anyNotes=ks.some(k=>from[k]==="notas");
+  return `<div class="xtags">${ks.map(k=>`<span class="${bad.includes(v[k])&&!(k==="channel"&&v[k]==="No")&&!(k==="caught"&&v[k]!=="No")?"warn":""}">${lab[k]}: ${esc(v[k])}${from[k]==="notas"?" *":""}</span>`).join("")}</div>${anyNotes?`<div class="hint">* leído de tus notas de cata. Márcalo en Editar si no es correcto.</div>`:""}`}
 function viewHist(){
   const all=brews();const methods=["Todos",...methodsIn(all)];
   if(!methods.includes(ui.histFilter))ui.histFilter="Todos";
@@ -662,6 +887,7 @@ function viewHist(){
       <div class="bars">${TASTE.map(([k,l])=>b[k]!=null?`<span>${l}</span><span class="bar"><i style="width:${b[k]*20}%"></i></span><span class="recipe">${b[k]}</span>`:"").join("")}</div>
       ${b.roast||age!=null?`<div class="hint">${b.roast?"Tueste "+esc(b.roast).toLowerCase():""}${b.roast&&age!=null?" · ":""}${age!=null?age+" días desde el tueste":""}${b.method!=="V60"&&b.bloom?" · "+(b.method==="Espresso"?"preinfusión ":"bloom ")+esc(b.bloom)+" s":""}</div>`:""}
       ${poursOf(b)?`<div>${pourChart(b.pours,b.time,{h:110})}<div class="recipe">${esc(pourLine(b))}</div></div>`:""}
+      ${xtags(b)}
       ${b.notes?`<div class="notes">${esc(b.notes)}</div>`:""}
       ${b.demo?"":ui.confirmDel===b.id?`<div class="row"><span class="hint" style="flex:1 1 100%">¿Borrar esta preparación? No se puede deshacer.</span><button class="btn ghost small" data-act="nodel">Cancelar</button><button class="btn danger small" data-act="del" data-id="${b.id}">Borrar</button></div>`:
       `<div class="row"><button class="btn ghost small" data-act="dup" data-id="${b.id}">Repetir receta</button><button class="btn ghost small" data-act="edit" data-id="${b.id}">Editar</button><button class="btn ghost small" data-act="askdel" data-id="${b.id}">Borrar</button></div>`}
@@ -684,14 +910,14 @@ function viewCfg(){
   <div class="card"><div class="label">Google Drive</div>
     <div class="kv"><span>Estado</span><span>${esc(status)}</span>
       <span>Archivo</span><span>${FILE_NAME}${drive.fileId?` · <a href="https://drive.google.com/file/d/${drive.fileId}/view" target="_blank" rel="noopener" style="color:var(--accent)">abrir</a>`:""}</span>
-      <span>En este móvil</span><span>${store.real.length} preparaciones${conn&&pending?` · ${pending} sin subir`:""}</span></div>
+      <span>En este móvil</span><span>${realBrews().length} preparaciones${coffeesAll().length?" · "+coffeesAll().length+(coffeesAll().length===1?" café":" cafés"):""}${conn&&pending?` · ${pending} sin subir`:""}</span></div>
     ${st==="noconfig"?`<div class="hint">Sigue los pasos del README para crear el ID de cliente y pegarlo en config.js.</div>`:
       !conn?`<button class="btn primary" data-act="d-connect">Conectar con Google Drive</button><div class="hint">Tus preparaciones se guardarán en el archivo ${FILE_NAME} de tu Drive. La app solo puede ver los archivos que ella misma crea.</div>`:
       `<div class="row"><button class="btn primary" data-act="d-sync">${tokenValid()?"Sincronizar ahora":"Sincronizar"}</button><button class="btn ghost" data-act="d-off">Desconectar</button></div>
        <div class="hint">Google da acceso por 1 hora cada vez. Pasado ese tiempo, la app sigue guardando en el móvil y te pide un toque en "Sincronizar" para subir los cambios.</div>`}
   </div>
   <div class="card"><div class="label">Copias y datos</div>
-    <div class="row"><button class="btn ghost small" data-act="export" ${store.real.length?"":"disabled"}>Exportar CSV</button><button class="btn ghost small" data-act="backup" ${store.real.length?"":"disabled"}>Copia JSON</button>
+    <div class="row"><button class="btn ghost small" data-act="export" ${realBrews().length?"":"disabled"}>Exportar CSV</button><button class="btn ghost small" data-act="backup" ${store.real.length?"":"disabled"}>Copia JSON</button>
       <label class="btn ghost small filebtn" style="flex:1;text-align:center">Importar…<input type="file" id="imp-file" accept=".csv,.json,text/csv,application/json"></label></div>
     <div class="hint">Importar acepta el CSV exportado desde la versión en Claude o una copia JSON. Las preparaciones se combinan con las que ya tienes, sin duplicar.</div>
   </div>
@@ -713,6 +939,15 @@ function chartSVG(pa,p){
   return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Nota frente a ${p.label}">${g}${curve}${line}${pts}<text x="${L}" y="${H-1}" style="font-size:9px">${p.label}${p.unit?" ("+p.unit+")":""} →</text></svg>`;
 }
 function freshCard(method,list){
+  const cur=currentCoffee(method);
+  if(cur){
+    if(!cur.roastDate)return{html:`<div class="card"><div class="label">Frescura del café · ${esc(cur.name)}</div><div class="hint">Añade la fecha de tueste de este café en la pestaña Cafés y ajustaré la receta según los días que tenga.</div><button class="btn ghost small" data-act="go-cafe" style="align-self:flex-start">Ir a Cafés</button></div>`,fr:null};
+    const age=coffeeAge(cur);const fr=freshness(age,cur.roast,method);
+    return{fr,html:`<div class="card"><div class="label">Frescura de tu café de ${esc(method)}</div>
+    <div class="fresh-head"><span><span class="fresh-age">${age} días</span> <span class="hint">desde el tueste · ${esc(cur.name)}</span></span><span class="pill" style="background:${fr.color}">${fr.tag}</span></div>
+    <ul class="diag">${fr.tips.map(t=>`<li>${t}</li>`).join("")}</ul>
+    ${Object.keys(fr.adj).length||fr.cap||fr.floor?`<label class="switch"><input type="checkbox" id="fresh-apply" data-act="fapply" ${ui.applyFresh?"checked":""}> Aplicar este ajuste a la receta sugerida</label>`:""}</div>`};
+  }
   const withDate=[];const seen=new Set();
   list.forEach(b=>{if(b.roastDate&&b.coffee&&!seen.has(b.coffee)){seen.add(b.coffee);withDate.push(b)}});
   if(!withDate.length)return{html:`<div class="card"><div class="label">Frescura del café</div><div class="hint">Añade la fecha de tueste al registrar y ajustaré la receta según los días que tenga el café.</div></div>`,fr:null};
@@ -727,41 +962,254 @@ function freshCard(method,list){
   </div>`;
   return{html,fr};
 }
+/* tazas válidas para la receta: fuera las de canalización clara (si quedan al menos 3) */
+function sugList(list){const ok=list.filter(b=>sens(b).v.channel!=="Clara");return ok.length>=3?ok:list}
+/* ---------- sugerencias: iconos ---------- */
+const IC={
+ ratio:'<path d="M12 3c3 4 5.5 7 5.5 10a5.5 5.5 0 0 1-11 0C6.5 10 9 7 12 3z"/><path d="M9.5 14.5a2.5 2.5 0 0 0 2.5 2.5"/>',
+ grind:'<circle cx="12" cy="13" r="7"/><path d="M12 13l3-3"/><path d="M12 3v3M5 7l1.6 1.6M19 7l-1.6 1.6"/>',
+ temp:'<path d="M10 4a2 2 0 0 1 4 0v9.5a4 4 0 1 1-4 0z"/><path d="M12 9v7"/>',
+ time:'<circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2"/><path d="M10 2h4"/>',
+ dose:'<ellipse cx="12" cy="12" rx="5.5" ry="8.5" transform="rotate(30 12 12)"/><path d="M8.6 17c2.4-1.6 2.9-3.8 3.3-5.2s1-3.6 3.5-5"/>',
+ pours:'<path d="M7 4c2 3 3.5 5 3.5 7a3.5 3.5 0 0 1-7 0C3.5 9 5 7 7 4z"/><path d="M17 9c1.7 2.4 3 4 3 5.8a3 3 0 0 1-6 0c0-1.8 1.3-3.4 3-5.8z"/>',
+ bloom:'<path d="M4 18h16"/><path d="M6 18c0-4 2.7-7 6-7s6 3 6 7"/><circle cx="9" cy="6" r="1.3"/><circle cx="14" cy="4.5" r="1"/><circle cx="16" cy="8" r="1.2"/>',
+ bloomMult:'<path d="M5 9h14l-1.5 9a2 2 0 0 1-2 1.7h-7a2 2 0 0 1-2-1.7z"/><path d="M5.5 13h13"/>',
+ stop:'<rect x="4" y="13" width="16" height="6" rx="1.5"/><path d="M8 13V9h8v4"/><path d="M12 9V4"/>',
+};
+const icon=k=>`<svg viewBox="0 0 24 24" aria-hidden="true">${IC[k]||IC.ratio}</svg>`;
+function recipeTiles(m,list,rec,an,notes){
+  const esp=m==="Espresso";const tiles=[];
+  const order=esp?["dose","grind","ratio","bloom","time"]:["dose","grind","ratio","temp","time","bloom","pours","bloomMult"];
+  order.forEach(k=>{const p=PARAMS.find(x=>x.k===k);if(!p||rec[k]==null||!an.params[k])return;
+    const fm=esp&&k==="time"?v=>Math.round(v)+" s":p.fmt;
+    const lab=esp&&k==="time"?"Parar a los":esp&&k==="bloom"?"Preinfusión":k==="time"?"Tiempo total":k==="grind"?"Molienda":k==="bloomMult"?"Agua bloom":p.label;
+    tiles.push({k,lab,val:fm(rec[k]),a:an.params[k],fm,adj:notes[k]})});
+  if(esp&&rec.ratio!=null){const dose=rec.dose!=null?rec.dose:18;const target=dose*rec.ratio;const dr=dripOf(list);
+    tiles.push({k:"stop",lab:"Para en",val:dr?Math.round(target-dr.avg)+" g":"–",stop:{target,dr}})}
+  if(!tiles.some(t=>t.k===ui.rOpen))ui.rOpen=null;
+  const open=tiles.find(t=>t.k===ui.rOpen);
+  let det="";
+  if(open){
+    if(open.stop){det=open.stop.dr?`<b>Para la máquina en ${Math.round(open.stop.target-open.stop.dr.avg)} g</b> para llegar a ${Math.round(open.stop.target)} g en taza.<br><span class="hint">Tu goteo medio después de parar es de +${r1(open.stop.dr.avg)} g (${open.stop.dr.n} shots).</span>`:`Anota el peso al parar en algunos shots para calcular tu goteo y decirte en qué peso parar para llegar a ${Math.round(open.stop.target)} g.`}
+    else{const a=open.a;det=`<b>${esc(open.lab)}: ${esc(open.val)}</b>${open.adj?`<div class="adj">${esc(open.adj)}</div>`:""}
+      <div class="dl"><span>Tus tazas ≥ ${a.smax-1}</span><span>${a.lo===a.hi?esc(open.fm(a.lo)):esc(open.fm(a.lo))+" – "+esc(open.fm(a.hi))}</span>
+      <span>Calculado con</span><span>${a.how} · ${a.n} tazas</span><span>Confianza</span><span>${confDots(a.conf)} ${["","baja","media","alta"][a.conf]}</span></div>`}
+  }
+  return `<div class="tiles">${tiles.map(t=>`<button class="tile${t.adj?" adj":""}" data-act="rtile" data-v="${t.k}" aria-expanded="${ui.rOpen===t.k}"><span class="ti">${icon(t.k)}</span><span class="tv">${esc(t.val)}</span><span class="tl2">${esc(t.lab)}</span></button>`).join("")}</div>
+  ${open?`<div class="tdet">${det}</div>`:`<div class="hint">Toca un valor para ver de dónde sale.${tiles.some(t=>t.adj)?" Los marcados llevan ajuste por frescura.":""}</div>`}`;
+}
+/* ---------- última taza y patrones ---------- */
+function symptomRows(m){
+  const r=[["Final amargo",v=>v.finish==="Amargo","bad"],["Inicio ácido",v=>v.start==="Ácido / agrio","bad"],["Astringente",v=>v.finish==="Astringente","bad"]];
+  if(m==="Espresso")r.push(["Canalización",v=>v.channel==="Leve"||v.channel==="Clara","bad"]);
+  if(m==="V60")r.push(["Drenaje lento",v=>v.flow==="Lento / atascado","bad"]);
+  r.push(["Notas claras",v=>v.caught==="Sí, claras","good"]);
+  return r;
+}
+function cupsChart(list,m){
+  const cups=list.slice(0,10).reverse();const n=cups.length;if(!n)return"";
+  const rows=symptomRows(m);const L=78,R=6,W=340,bh=70,top=8,rowH=15,gap=10;const H=top+bh+18+rows.length*rowH+4;
+  const cw=(W-L-R)/n;const S=cups.map(b=>sens(b).v);
+  let g="";
+  [5,10].forEach(y=>{const yy=top+bh-y/10*bh;g+=`<line x1="${L}" x2="${W-R}" y1="${yy}" y2="${yy}" stroke="var(--line)"/><text x="${L-6}" y="${yy+3}" text-anchor="end">${y}</text>`});
+  g+=`<text x="0" y="${top+bh/2+3}">Nota</text>`;
+  cups.forEach((b,i)=>{const x=L+i*cw+cw*.18,w=cw*.64,h=b.score/10*bh,last=i===n-1;
+    g+=`<rect x="${x.toFixed(1)}" y="${(top+bh-h).toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" rx="2" fill="${scoreColor(b.score)}" opacity="${last?1:.75}"/>`;
+    g+=`<text x="${(x+w/2).toFixed(1)}" y="${(top+bh-h-3).toFixed(1)}" text-anchor="middle" style="fill:var(--ink);font-weight:600">${b.score}</text>`;
+    if(last)g+=`<text x="${(x+w/2).toFixed(1)}" y="${top+bh+12}" text-anchor="middle" style="fill:var(--accent);font-weight:600">última</text>`;});
+  rows.forEach(([lab,f,kind],j)=>{const y=top+bh+18+j*rowH+rowH/2;
+    g+=`<text x="0" y="${y+3}">${lab}</text>`;
+    cups.forEach((b,i)=>{const cx=L+i*cw+cw/2;const on=f(S[i]);
+      g+=on?`<circle cx="${cx.toFixed(1)}" cy="${y}" r="4.5" fill="${kind==="good"?"var(--s-good)":"var(--accent)"}"/>`:`<circle cx="${cx.toFixed(1)}" cy="${y}" r="1.6" fill="var(--line)"/>`});});
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Nota y sensaciones de tus últimas ${n} tazas">${g}</svg>`;
+}
+function lastCupCard(list,m){const p=patterns(list);
+  return `<div class="card"><div class="label">Tu última taza y patrones</div>
+  ${list.length>=2?cupsChart(list,m)+`<div class="hint">Tus últimas ${Math.min(10,list.length)} tazas, de la más antigua a la última. Cada punto marca una sensación registrada o leída de tus notas.</div>`:""}
+  <div class="sub">Tu última taza · ${fmtDate(list[0].ts)}</div><ul class="diag">${diagnose(list[0]).map(t=>`<li>${t}</li>`).join("")}</ul>
+  ${p.length?`<div class="sub">En tus últimas tazas</div><ul class="diag">${p.map(t=>`<li>${esc(t)}</li>`).join("")}</ul>`:""}</div>`}
+/* ---------- guía por método, priorizando lo que sale en tus análisis ---------- */
+function issuesOf(list){
+  const last=list.slice(0,10).map(b=>({b,v:sens(b).v}));const c=f=>last.filter(f).length;
+  return{n:last.length,bitter:c(o=>o.v.finish==="Amargo"||(o.b.bitter>=4)),sour:c(o=>o.v.start==="Ácido / agrio"||(o.b.acid>=4&&o.b.bitter!=null&&o.b.bitter<=2)),astr:c(o=>o.v.finish==="Astringente"),
+    channel:c(o=>o.v.channel==="Leve"||o.v.channel==="Clara"||o.v.puck==="Con agujeros"),fast:c(o=>o.v.flow==="Rápido"),slow:c(o=>o.v.flow==="Lento"||o.v.flow==="Lento / atascado"),
+    wet:c(o=>o.v.puck==="Encharcada"),bed:c(o=>o.v.bed==="Irregular / cráter"),walls:c(o=>o.v.bed==="Café en paredes"),noNotes:c(o=>o.v.caught==="No"),thin:c(o=>o.b.body!=null&&o.b.body<=2||o.v.finish==="Corto / aguado")};
+}
+const GUIDE={
+ Espresso:[
+  {k:"channel",t:"Preparar la pastilla sin canalización",p:["Rompe los grumos con una aguja (WDT) por toda la profundidad del cestillo, no solo arriba.","Golpea suave el portafiltro para asentar, tampa recto con presión firme y gira sin levantar para pulir.","Si se repite, mira si el café está muy fresco (menos de 7 días): el CO₂ también provoca canalización."]},
+  {k:"bitter",t:"Si el final sale amargo",p:["Muele un paso más grueso o para la máquina antes (ratio más corto).","Cambia solo una cosa por shot para saber qué ha funcionado."]},
+  {k:"sour",t:"Si el inicio sale ácido o agrio",p:["Muele un paso más fino o alarga el ratio (más bebida en taza).","Con tueste claro es normal necesitar molienda más fina y ratios de 1:2,2 a 1:2,5."]},
+  {k:"astr",t:"Si el final es astringente o seco",p:["Suele venir de canalización o de moler demasiado fino: revisa primero la preparación.","Prueba medio paso más grueso manteniendo la dosis."]},
+  {k:"fast",t:"Si el flujo es rápido",p:["Muele más fino o sube 0,5 g la dosis.","Asegúrate de que el cestillo está bien lleno y el tampado nivelado."]},
+  {k:"slow",t:"Si el flujo es lento",p:["Muele más grueso o baja 0,5 g la dosis."]},
+  {k:"wet",t:"Si la pastilla sale encharcada",p:["Falta café para el cestillo: sube entre 0,5 y 1 g la dosis.","Muele algo más fino si al subir dosis el shot se acelera."]},
+  {k:"noNotes",t:"Si no captas notas",p:["Prueba un ratio algo más largo: abre los sabores frutales y florales.","Deja enfriar el shot un minuto antes de probarlo: se perciben mejor las notas."]},
+  {k:"thin",t:"Si falta cuerpo",p:["Ratio más corto (menos bebida) o algo más de dosis."]},
+ ],
+ V60:[
+  {k:"bed",t:"Lecho plano y extracción uniforme",p:["En el bloom, remueve o da un giro para que todo el café quede mojado.","Vierte en espirales pequeñas en el centro; al final da un giro suave al gotero para aplanar el lecho."]},
+  {k:"walls",t:"Si queda café pegado en las paredes",p:["No viertas sobre el papel: el agua que baja por las paredes no extrae.","Un giro suave tras el último vertido baja ese café al lecho."]},
+  {k:"slow",t:"Si el drenaje es lento o se atasca",p:["Muele más grueso: suele haber demasiados finos.","Agita menos en los vertidos y vierte más bajo y despacio."]},
+  {k:"fast",t:"Si el drenaje es rápido",p:["Muele más fino o vierte más despacio para alargar el contacto."]},
+  {k:"bitter",t:"Si el final sale amargo",p:["Muele un paso más grueso, baja 1–2 °C o reduce un vertido.","Si el tiempo total pasa de 3:30, la molienda es el primer sospechoso."]},
+  {k:"sour",t:"Si el inicio sale ácido o agrio",p:["Muele un paso más fino o sube 1–2 °C.","Un bloom algo más largo (40–45 s) ayuda con cafés frescos."]},
+  {k:"astr",t:"Si el final es astringente o seco",p:["Suele ser exceso de agitación o finos: vierte más suave y muele un paso más grueso."]},
+  {k:"noNotes",t:"Si no captas notas",p:["Con tueste claro, sube la temperatura a 94–96 °C.","Prueba cuando la taza esté templada: las notas aparecen al bajar la temperatura."]},
+  {k:"thin",t:"Si falta cuerpo",p:["Ratio más corto (menos agua por gramo) o menos vertidos."]},
+ ],
+ AeroPress:[
+  {k:"bitter",t:"Si el final sale amargo",p:["Acorta la infusión o muele más grueso."]},
+  {k:"sour",t:"Si el inicio sale ácido o agrio",p:["Alarga la infusión, remueve al inicio o muele más fino."]},
+  {k:"slow",t:"Si el prensado es muy duro",p:["Muele más grueso y presiona lento y constante."]},
+  {k:"fast",t:"Si el prensado es muy fácil",p:["Muele más fino."]},
+ ],
+};
+function methodGuide(m,list){
+  const items=GUIDE[m]||GUIDE.AeroPress;const is=issuesOf(list);
+  const hit=items.filter(g=>is[g.k]>0).sort((a,b)=>is[b.k]-is[a.k]);const rest=items.filter(g=>!(is[g.k]>0));
+  const block=(g,open)=>`<details class="guide"${open?" open":""}><summary>${esc(g.t)}${is[g.k]>0?` <span class="tag2">${is[g.k]} de ${is.n}</span>`:""}</summary>${g.p.map(x=>`<p>${esc(x)}</p>`).join("")}</details>`;
+  const dr=m==="Espresso"?dripOf(list):null;
+  return `<div class="card"><div class="label">Guía de ${esc(m)}</div>
+  ${hit.length?`<div class="sub" style="margin-top:0">Según tus últimas tazas</div>${hit.map((g,i)=>block(g,i===0)).join("")}`:`<div class="hint">En tus últimas tazas no aparece ningún problema repetido. Aquí tienes cómo afinar.</div>`}
+  ${m==="Espresso"?`<details class="guide"><summary>Goteo después de parar</summary><p>La diferencia entre la bebida final (pesada cuando deja de gotear) y el peso al parar es el goteo.</p><p>${dr?`Tu goteo medio es de +${r1(dr.avg)} g en ${dr.n} ${dr.n===1?"shot":"shots"}: por eso la receta te dice en qué peso parar.`:"Anota el peso al parar en algunos shots y calcularé tu goteo medio."}</p></details>
+  <details class="guide"><summary>Cómo reconocer la canalización</summary><p>Chorros finos o que salen por los lados, manchas claras en el chorro o agujeros en la pastilla al sacarla.</p><p>Suele dar a la vez un inicio ácido y un final amargo o seco. Si marcas canalización clara, esa taza no se usa para calcular la receta.</p></details>`:""}
+  ${rest.length?`<div class="sub">Otros ajustes</div>${rest.map(g=>block(g,false)).join("")}`:""}
+  <div class="hint">Cómo usar tu molino, la máquina y el material está en la pestaña Equipo.</div></div>`;
+}
+/* aviso de compensación por frescura (solo si hace falta) */
+function compCard(fc,notes){
+  const fr=fc.fr;if(!fr)return"";
+  if(!Object.keys(fr.adj).length)return"";
+  const adj=Object.values(notes||{});const cur=currentCoffee(ui.sugMethod);
+  return `<div class="card comp"><div class="fresh-head"><div class="label">Compensación por frescura</div><span class="pill" style="background:${fr.color}">${fr.tag}</span></div>
+    <div>${cur?esc(cur.name)+" tiene "+coffeeAge(cur)+" días desde el tueste.":"Tu café necesita un ajuste por los días que tiene."}</div>
+    <ul class="diag">${fr.tips.map(t=>`<li>${t}</li>`).join("")}</ul>
+    <label class="switch"><input type="checkbox" id="fresh-apply" ${ui.applyFresh?"checked":""}> Aplicar este ajuste a la receta sugerida</label>
+    ${ui.applyFresh&&adj.length?`<div class="hint">Aplicado: ${esc(adj.join(" · "))}.</div>`:""}</div>`;
+}
+function bestCard(b,m){return b?`<div class="card"><div class="label">Tu mejor taza de ${esc(m)}</div><div class="row" style="flex-wrap:nowrap"><span class="badge" style="background:${scoreColor(b.score)}">${b.score}</span><span style="min-width:0"><div style="font-weight:600">${esc(b.coffee||b.method)}</div><div class="recipe">${esc(recipeLine(b))}</div></span></div>${poursOf(b)?pourChart(b.pours,b.time,{h:110}):""}${b.demo?"":`<button class="btn ghost small" data-act="dup" data-id="${b.id}">Repetir esta receta</button>`}</div>`:""}
+/* base de la sugerencia: solo el café en uso si tiene al menos 3 tazas, o todos */
+function sugBase(m,list){
+  const cur=currentCoffee(m);const same=cur?list.filter(b=>sameCoffee(b,cur)):[];
+  const can=same.length>=3;let scope=ui.sugScope;if(scope==="cafe"&&!can)scope="all";if(!scope)scope=can?"cafe":"all";
+  return{cur,same,can,scope,base:scope==="cafe"?same:list};
+}
 function viewSug(){
   const all=brews();const methods=methodsIn(all);
   if(!methods.length)return `<div class="view"><div class="empty">Registra al menos tres preparaciones de un método para recibir sugerencias.</div></div>`;
   if(!methods.includes(ui.sugMethod))ui.sugMethod=methods.slice().sort((a,b)=>all.filter(x=>x.method===b).length-all.filter(x=>x.method===a).length)[0];
-  const list=all.filter(b=>b.method===ui.sugMethod);
-  const head=`<section class="block"><h2>Sugerencias</h2><div class="chips">${methods.map(m=>`<button class="chip" data-act="smethod" data-v="${m}" aria-pressed="${ui.sugMethod===m}">${m} <span class="hint">${all.filter(b=>b.method===m).length}</span></button>`).join("")}</div></section>`;
-  const fc=freshCard(ui.sugMethod,list);
-  if(list.length<3)return `<div class="view">${demoBanner()}${head}<div class="card"><div>Con ${list.length} ${list.length===1?"preparación":"preparaciones"} de ${esc(ui.sugMethod)} aún no hay base para sugerir. Registra al menos 3, variando una cosa cada vez.</div></div>${DF54_START[ui.sugMethod]?`<div class="card"><div class="label">Punto de partida en tu DF54 · ${esc(ui.sugMethod)}</div><div class="sug">${ROASTS.map(r=>`<div class="sug-row"><span class="k">Tueste ${r.toLowerCase()}</span><span class="v">${DF54_START[ui.sugMethod][r]}</span></div>`).join("")}</div><div class="hint">Menor número = más fino. Rango habitual ${DF54_START[ui.sugMethod].range}. Comprueba el cero de tu molino (fresas tocándose) para que estos valores te sirvan.</div></div>`:""}${fc.html}<div class="card"><div class="label">Tu última taza</div><ul class="diag">${diagnose(list[0]).map(t=>`<li>${t}</li>`).join("")}</ul></div></div>`;
-  const {an,rec,notes}=suggestion(ui.sugMethod,list,ui.applyFresh?fc.fr:null);
-  const rows=PARAMS.filter(p=>!p.info&&rec[p.k]!=null);
-  const chartable=PARAMS.filter(p=>an.params[p.k]&&(p.k!=="pours"&&p.k!=="bloomMult"||ui.sugMethod==="V60"));
+  const m=ui.sugMethod;const list=all.filter(b=>b.method===m);
+  const head=`<section class="block"><h2>Sugerencias</h2><div class="chips">${methods.map(x=>`<button class="chip" data-act="smethod" data-v="${x}" aria-pressed="${m===x}">${x} <span class="hint">${all.filter(b=>b.method===x).length}</span></button>`).join("")}</div></section>`;
+  const fc=freshCard(m,list);
+  if(list.length<3)return `<div class="view">${demoBanner()}${head}<div class="card"><div class="label">Receta sugerida · ${esc(m)}</div><div>Con ${list.length} ${list.length===1?"preparación":"preparaciones"} de ${esc(m)} aún no hay base para sugerir. Registra al menos 3, variando una cosa cada vez.</div>${DF54_START[m]?`<div class="hint">Mientras tanto, usa los puntos de partida del molino en la pestaña Equipo.</div>`:""}</div>${list.length?lastCupCard(list,m):""}${compCard(fc,{})}${methodGuide(m,list)}</div>`;
+  const sb=sugBase(m,list);
+  const used=sugList(sb.base);const skipped=sb.base.length-used.length;
+  const {an,rec,notes}=suggestion(m,used,ui.applyFresh?fc.fr:null);
+  const scope=sb.cur?`<div class="chips">${`<button class="chip" data-act="sscope" data-v="cafe" aria-pressed="${sb.scope==="cafe"}" ${sb.can?"":"disabled"}>${esc(sb.cur.name)} <span class="hint">${sb.same.length}</span></button><button class="chip" data-act="sscope" data-v="all" aria-pressed="${sb.scope==="all"}">Todos los cafés <span class="hint">${list.length}</span></button>`}</div>${sb.can?"":`<div class="hint">A partir de 3 tazas de ${esc(sb.cur.name)} podré calcular solo con este café.</div>`}`:"";
+  const chartable=PARAMS.filter(p=>an.params[p.k]&&(p.k!=="pours"&&p.k!=="bloomMult"||m==="V60"));
   if(!chartable.some(p=>p.k===ui.chartParam))ui.chartParam=chartable[0]&&chartable[0].k;
   const cp=PARAMS.find(p=>p.k===ui.chartParam);
-  const b=an.best;
+  const infl=an.infl.filter(o=>o.p.k!=="pours"&&o.p.k!=="bloomMult"||m==="V60");
   return `<div class="view">${demoBanner()}${head}
   <div class="card">
-    <div class="row" style="justify-content:space-between"><div class="label">Receta sugerida · ${esc(ui.sugMethod)}</div><span class="hint">${an.n} tazas</span></div>
-    <div class="sug">${rows.map(p=>{const a=an.params[p.k];const esp=ui.sugMethod==="Espresso";const fm=esp&&p.k==="time"?v=>Math.round(v)+" s":p.fmt;return `<div class="sug-row"><span class="k">${esp&&p.k==="time"?"Parar a los":esp&&p.k==="bloom"?"Preinfusión":p.k==="time"?"Tiempo total":p.label}</span><span class="v">${esc(fm(rec[p.k]))}</span>
-      ${notes[p.k]?`<span class="adj">${esc(notes[p.k])}</span>`:""}
-      <span class="meta"><span>Tus tazas ≥ ${a.smax-1}: ${a.lo===a.hi?esc(fm(a.lo)):esc(fm(a.lo))+" – "+esc(fm(a.hi))}</span><span>${a.how} ${confDots(a.conf)}</span></span></div>`}).join("")}${stopRow(ui.sugMethod,list,rec)}</div>
+    <div class="row" style="justify-content:space-between"><div class="label">Receta sugerida · ${esc(m)}</div><span class="hint">${an.n} tazas${skipped?` · ${skipped} con canalización fuera`:""}</span></div>
+    ${scope}
+    ${recipeTiles(m,list,rec,an,notes)}
     <button class="btn primary" data-act="use-sug">Preparar con esta receta</button>
   </div>
-  ${fc.html}
-  <div class="card"><div class="label">Tu última taza · ${fmtDate(list[0].ts)}</div><ul class="diag">${diagnose(list[0]).map(t=>`<li>${t}</li>`).join("")}</ul></div>
-  ${an.infl.length?`<div class="card"><div class="label">Qué más pesa en tu nota</div><div class="infl">${an.infl.filter(o=>o.p.k!=="pours"&&o.p.k!=="bloomMult"||ui.sugMethod==="V60").map(o=>`<span>${o.p.label}</span><span class="bar"><i style="width:${Math.round(Math.abs(o.r)*100)}%"></i></span><small>${Math.abs(o.r)<.2?"apenas influye por ahora":(o.r>0?o.p.hi:o.p.lo)+" → mejor nota"}</small>`).join("")}</div><div class="hint">Relación lineal en tus registros. Si una variable tiene un punto óptimo intermedio, puede pesar más de lo que indica la barra.</div></div>`:""}
-  ${cp?`<div class="card"><div class="label">Nota según variable</div><div class="chips">${chartable.map(p=>`<button class="chip" data-act="cparam" data-v="${p.k}" aria-pressed="${ui.chartParam===p.k}">${p.label}</button>`).join("")}</div>${chartSVG(an.params[cp.k],cp)}<div class="hint">Cada punto es una taza.${cp.info?"":" La línea marca el valor sugerido por tus datos (sin ajuste de frescura)"}${an.params[cp.k].fit?"; la curva discontinua, la tendencia de tus notas":""}.</div></div>`:""}
-  ${b?`<div class="card"><div class="label">Tu mejor taza de ${esc(ui.sugMethod)}</div><div class="row" style="flex-wrap:nowrap"><span class="badge" style="background:${scoreColor(b.score)}">${b.score}</span><span style="min-width:0"><div style="font-weight:600">${esc(b.coffee||b.method)}</div><div class="recipe">${esc(recipeLine(b))}</div></span></div>${poursOf(b)?pourChart(b.pours,b.time,{h:110}):""}${b.demo?"":`<button class="btn ghost small" data-act="dup" data-id="${b.id}">Repetir esta receta</button>`}</div>`:""}
+  ${lastCupCard(list,m)}
+  ${compCard(fc,notes)}
+  <div class="card"><div class="label">Nota según variable · ${esc(m)}</div>
+    ${infl.length?`<div class="hbars">${infl.map(o=>{const w=Math.round(Math.abs(o.r)*100);const weak=Math.abs(o.r)<.2;return `<div class="hb"><div class="hbh"><span>${o.p.label}</span><span class="hint">${weak?"apenas influye":(o.r>0?o.p.hi:o.p.lo)+" → mejor nota"}</span></div><div class="hbt"><i style="width:${Math.max(3,w)}%;${weak?"background:var(--line)":""}"></i></div></div>`}).join("")}</div>
+    <div class="hint">Cuanto más larga la barra, más se relaciona esa variable con tu nota en ${esc(m)}.</div>`:`<div class="hint">Necesito al menos 5 tazas de ${esc(m)} en las que cambie alguna variable para ver cuál pesa más en tu nota.</div>`}
+  </div>
+  ${bestCard(an.best,m)}
+  ${methodGuide(m,list)}
   </div>`;
+}
+
+/* ---------- equipo ---------- */
+function eqItem(k,label,val,edit){return edit?`<div class="field txt"><label class="hint" for="s-${k}">${label}</label><input id="s-${k}" data-sf="${k}" value="${esc(val)}"></div>`:`<div class="eqi"><span class="hint">${label}</span><span>${esc(val||"–")}</span></div>`}
+function viewEq(){
+  const S=ui.eqForm||setup();const ed=!!ui.eqForm;
+  const grindTable=["Espresso","V60","AeroPress"].map(m=>`<div class="sug-row"><span class="k">${m}</span><span class="v" style="font-size:.95rem">${ROASTS.map(r=>DF54_START[m][r]).join(" · ")}</span><span class="meta"><span>Claro · medio · oscuro</span><span>rango ${DF54_START[m].range}</span></span></div>`).join("");
+  return `<div class="view">
+  <section class="block"><div class="row" style="justify-content:space-between"><h2>Equipo</h2>${ed?"":`<button class="btn ghost small" style="flex:0 0 auto" data-act="eq-edit">Editar</button>`}</div></section>
+  <div class="card"><div class="label">Molino</div>${eqItem("grinder","Modelo",S.grinder,ed)}
+    <div class="hint">Dial continuo de 0 a 90: menor número = más fino. Comprueba el cero (fresas tocándose) para que los puntos de partida te sirvan.</div>
+    <div class="label" style="margin-top:4px">Puntos de partida</div><div class="sug">${grindTable}</div>
+    <details class="guide"><summary>Cómo usarlo</summary><p>Muele justo antes de preparar y pesa el café en grano: así la dosis es exacta.</p><p>Al terminar, expulsa el café que queda retenido en la salida (unos golpecitos o el fuelle) para que no se mezcle con el siguiente.</p><p>Mueve el dial con el motor parado y de poco en poco: en espresso, un número cambia mucho el tiempo del shot.</p><p>Comprueba el cero de vez en cuando: si cambia, cambian todos tus puntos de partida.</p></details></div>
+  <div class="card"><div class="label">Espresso</div>${eqItem("espMachine","Máquina",S.espMachine,ed)}
+    <div class="hint">Temperatura y presión fijas: no se registran. El tiempo se cuenta desde que pulsas el botón y la bebida final se pesa cuando deja de gotear. Con el peso al parar calculo tu goteo medio y te digo en Sugerencias en qué peso parar.</div>
+    <details class="guide"><summary>Cómo usarlo</summary><p>Deja que la máquina caliente y haz pasar agua por el grupo sin portafiltro antes de cada shot: limpia y estabiliza la temperatura.</p><p>Precalienta la taza y el portafiltro: un shot que cae en taza fría pierde aroma enseguida.</p><p>Usa el cestillo de pared simple para registrar: el de doble pared crea crema artificial y esconde los fallos de molienda.</p><p>Pon la báscula debajo y pulsa para parar a mano: anota el peso que marca en ese momento y, al terminar el goteo, el peso final.</p><p>Después de cada shot, saca la pastilla, mírala (¿firme, encharcada, con agujeros?) y limpia el grupo con un paño.</p></details></div>
+  <div class="card"><div class="label">V60</div>${eqItem("v60Dripper","Gotero",S.v60Dripper,ed)}${eqItem("v60Filter","Filtros",S.v60Filter,ed)}${eqItem("kettle","Hervidor",S.kettle,ed)}
+    <details class="guide"><summary>Cómo usarlo</summary><p>Dobla la costura del filtro Hario antes de colocarlo para que asiente bien en el gotero.</p><p>Enjuaga el filtro con agua caliente: quita el sabor a papel y precalienta el gotero y la taza. Tira esa agua antes de añadir el café.</p><p>Calienta el hervidor a la temperatura de la receta; si no tiene control de temperatura, deja reposar 30–45 s tras hervir para llegar a unos 94–96 °C.</p><p>Con el cuello de cisne, vierte bajo y despacio, en espirales pequeñas en el centro, sin echar agua sobre el papel.</p><p>La V60 01 de 1 taza funciona mejor con dosis de 12 a 18 g; por encima el lecho queda muy alto y drena lento.</p></details></div>
+  <div class="card"><div class="label">AeroPress</div>
+    ${ed?`<label class="switch"><input type="checkbox" id="s-aeroHave" ${S.aeroHave?"checked":""}> La tengo</label>${S.aeroHave?eqItem("aeroModel","Modelo",S.aeroModel,true):""}`:S.aeroHave?eqItem("aeroModel","Modelo",S.aeroModel,false):`<div class="hint">Aún no tienes AeroPress.</div>`}</div>
+  ${ed?`<div class="row"><button class="btn ghost" data-act="eq-cancel">Cancelar</button><button class="btn primary" data-act="eq-save">Guardar</button></div>`:""}
+  <div class="hint">Si cambias de máquina o de material, dímelo y ajusto qué variables hay que registrar (por ejemplo la temperatura en espresso).</div>
+  </div>`;
+}
+
+/* ---------- cafés ---------- */
+function cafeFormHTML(cf,isNew){
+  return `<div class="card cform"><div class="label">${isNew?"Nuevo café":"Editar café"}</div>
+    <div class="field txt"><label class="hint" for="c-name">Origen o nombre</label><input id="c-name" data-cf="name" placeholder="Etiopía Guji, natural" value="${esc(cf.name)}"></div>
+    <div class="roastline">
+      <div class="field"><span class="hint">Tueste</span><div class="chips">${ROASTS.map(r=>`<button class="chip" data-act="cf-roast" data-v="${r}" aria-pressed="${cf.roast===r}">${r}</button>`).join("")}</div></div>
+      <div class="field"><label class="hint" for="c-roastDate">Fecha de tueste</label><input id="c-roastDate" data-cf="roastDate" type="date" max="${todayISO()}" value="${esc(cf.roastDate)}"></div>
+    </div>
+    <div class="field"><span class="hint">En uso ahora para</span><div class="chips">${CMETHODS_ALL.filter(hasMethod).map(m=>`<button class="chip" data-act="cf-m" data-v="${m}" aria-pressed="${cf.methods.includes(m)}">${m}</button>`).join("")}</div>
+      <span class="hint">Puedes marcar varios si usas el mismo café en dos preparaciones. Si otro café estaba en uso para ese método, lo sustituye.</span></div>
+    <div class="row"><button class="btn ghost" data-act="cf-cancel">Cancelar</button><button class="btn primary" data-act="cf-save">${isNew?"Añadir café":"Guardar"}</button></div>
+  </div>`;
+}
+function viewCafe(){
+  const act=coffeesActive(),done=coffeesAll().filter(c=>c.finished);
+  const known=new Set(coffeesAll().map(c=>(c.name||"").trim().toLowerCase()));
+  const fromBrews=[];const seen=new Set();realBrews().slice().sort((a,b)=>b.ts-a.ts).forEach(b=>{const k=(b.coffee||"").trim().toLowerCase();if(k&&!known.has(k)&&!seen.has(k)){seen.add(k);fromBrews.push(b)}});
+  const usage=`<div class="card"><div class="label">En uso ahora</div><div class="uses">${CMETHODS_ALL.filter(hasMethod).map(m=>{const c=currentCoffee(m);return `<span class="um">${m}</span>${c?`<span class="uc"><b>${esc(c.name)}</b><span class="hint">${esc(roastTxt(c))}</span></span>`:`<span class="uc hint">Sin asignar</span>`}`}).join("")}</div>
+    <div class="hint">Registrar y Sugerencias usan el café asignado a cada método.</div></div>`;
+  const freshHTML=c=>{const age=coffeeAge(c);
+    if(age==null)return `<div class="fresh-mini hint">Añade la fecha de tueste (Editar) para ver su frescura.</div>`;
+    const ms=(c.methods||[]).filter(m=>m!=="Otro");const list=ms.length?ms:["V60"];
+    return `<div class="fresh-mini"><div class="fresh-head"><span><span class="fresh-age">${age} días</span> <span class="hint">desde el tueste</span></span></div>
+      ${list.map(m=>{const fr=freshness(age,c.roast,m);const need=Object.keys(fr.adj).length;return `<details class="guide"><summary><span>${ms.length?esc(m)+" · ":""}<span class="pill" style="background:${fr.color}">${fr.tag}</span></span></summary><ul class="diag" style="margin-top:8px">${fr.tips.map(t=>`<li>${t}</li>`).join("")}</ul>${need&&ms.length?`<p class="hint">Te aviso en Sugerencias para compensarlo en la receta.</p>`:""}</details>`}).join("")}
+    </div>`};
+  const card=c=>{
+    if(ui.cafeEdit===c.id)return cafeFormHTML(ui.cafeForm,false);
+    const n=realBrews().filter(b=>sameCoffee(b,c)).length;
+    return `<div class="card"><div class="row" style="justify-content:space-between;flex-wrap:nowrap;align-items:flex-start"><div style="min-width:0"><div class="cname">${esc(c.name)}</div><div class="hint">${esc(roastTxt(c))}${n?" · "+n+(n===1?" taza":" tazas"):""}</div></div><button class="btn ghost small" style="flex:0 0 auto" data-act="cf-edit" data-id="${c.id}">Editar</button></div>
+      ${freshHTML(c)}
+      <div class="field"><span class="hint">En uso para</span><div class="chips">${CMETHODS_ALL.filter(hasMethod).map(m=>`<button class="chip" data-act="cof-m" data-id="${c.id}" data-v="${m}" aria-pressed="${(c.methods||[]).includes(m)}">${m}</button>`).join("")}</div></div>
+      ${ui.confirmDel===c.id?`<div class="row"><span class="hint" style="flex:1 1 100%">¿Marcar como terminado? Dejará de estar en uso. Sus tazas se quedan en el historial.</span><button class="btn ghost small" data-act="nodel">Cancelar</button><button class="btn primary small" data-act="cf-done" data-id="${c.id}">Terminado</button></div>`:`<button class="btn ghost small" style="align-self:flex-start" data-act="cf-askdone" data-id="${c.id}">Paquete terminado</button>`}
+    </div>`};
+  return `<div class="view">
+  <section class="block"><div class="row" style="justify-content:space-between"><h2>Cafés</h2>${ui.cafeEdit==="new"?"":`<button class="btn primary small" style="flex:0 0 auto" data-act="cf-new">+ Añadir café</button>`}</div></section>
+  ${usage}
+  ${ui.cafeEdit==="new"?cafeFormHTML(ui.cafeForm,true):""}
+  <section class="block"><div class="label">Mis cafés</div>
+    ${act.length?act.map(card).join(""):`<div class="hint">Aún no has añadido ningún café.</div>`}
+  </section>
+  ${fromBrews.length?`<section class="block"><div class="label">De tus registros</div><div class="hint">Cafés que aparecen en tu historial. Tócalo para añadirlo con su tueste y fecha.</div><div class="chips">${fromBrews.slice(0,6).map(b=>`<button class="chip" data-act="cf-import" data-id="${b.id}">+ ${esc(b.coffee)}</button>`).join("")}</div></section>`:""}
+  ${done.length?`<section class="block"><button class="btn ghost small" style="align-self:flex-start" data-act="cf-showdone">${ui.showDone?"Ocultar":"Ver"} terminados (${done.length})</button>
+    ${ui.showDone?done.map(c=>`<div class="row" style="justify-content:space-between;flex-wrap:nowrap;border-bottom:1px solid var(--line);padding:8px 0"><span style="min-width:0"><b>${esc(c.name)}</b><br><span class="hint">${esc(roastTxt(c))}</span></span><button class="btn ghost small" style="flex:0 0 auto" data-act="cf-undo" data-id="${c.id}">Reactivar</button></div>`).join(""):""}</section>`:""}
+  </div>`;
+}
+/* asigna métodos a un café quitándolos de los demás */
+async function assignCoffee(c,methods){
+  const writes=[];
+  coffeesActive().forEach(o=>{if(o.id===c.id)return;const keep=(o.methods||[]).filter(m=>!methods.includes(m));if(keep.length!==(o.methods||[]).length)writes.push(Object.assign({},o,{methods:keep}))});
+  writes.push(Object.assign({},c,{methods}));
+  for(const w of writes)await saveBrew(w);
 }
 
 /* ---------- render y eventos ---------- */
 function render(){
   const app=$("#app");
   const ae=document.activeElement;const active=ae&&ae.id;
-  app.innerHTML=ui.tab==="new"?viewNew():ui.tab==="hist"?viewHist():ui.tab==="cfg"?viewCfg():viewSug();
+  app.innerHTML=ui.tab==="new"?viewNew():ui.tab==="hist"?viewHist():ui.tab==="cfg"?viewCfg():ui.tab==="cafe"?viewCafe():ui.tab==="eq"?viewEq():viewSug();
   $("#gear").setAttribute("aria-pressed",ui.tab==="cfg");
   document.querySelectorAll("nav.tabs button").forEach(b=>b.setAttribute("aria-current",b.dataset.tab===ui.tab?"page":"false"));
   if(active&&/^(f|p)-/.test(active)){const el=document.getElementById(active);if(el)el.focus()}
@@ -773,27 +1221,31 @@ $("#app").addEventListener("input",e=>{
   if(el.dataset.pf){
     const pv=f.pv;pv.auto=false;
     if(el.dataset.pf==="bloomG")pv.bloomG=el.value;else pv.rows[+el.dataset.i][el.dataset.pf]=el.value;
-    refreshPours(false);return;
+    syncWater(f);updRatio(f);refreshPours(false);return;
   }
+  if(el.dataset.sf&&ui.eqForm){ui.eqForm[el.dataset.sf]=el.value;return}
+  if(el.dataset.cf&&ui.cafeForm){ui.cafeForm[el.dataset.cf]=el.value;return}
   const k=el.dataset.f;if(!k)return;f[k]=el.value;
-  if(k==="dose"||k==="water"){const r=num(f.dose)&&num(f.water)?num(f.water)/num(f.dose):null;const v=$("#ratio-v");if(v)v.textContent=r?"1:"+r.toFixed(1):"–"}
+  if(k==="stopW"||k==="water"){const d=$("#drip-v");if(d)d.textContent=dripTxt(f)}
+  if(k==="dose"||k==="water")updRatio(f);
   if(k==="roastDate"){const a=$("#age-v");if(a)a.textContent=ageText(f.roastDate)}
   if(f.pv&&(k==="dose"||k==="water"||k==="time")){if(f.pv.auto){distribute(f);refreshPours(true)}else refreshPours(false)}
 });
-$("#app").addEventListener("change",e=>{if(e.target.id==="f-roastDate")render();if(e.target.id==="fresh-apply"){ui.applyFresh=e.target.checked;render()}});
+$("#app").addEventListener("change",e=>{if(e.target.id==="f-roastDate")render();if(e.target.id==="s-aeroHave"&&ui.eqForm){ui.eqForm.aeroHave=e.target.checked;render();return}if(e.target.id==="fresh-apply"){ui.applyFresh=e.target.checked;render()}});
 $("#app").addEventListener("click",async e=>{
   const t=e.target.closest("[data-act]");if(!t||t.id==="fresh-apply")return;const a=t.dataset.act,v=t.dataset.v,id=t.dataset.id;const f=ui.form;
   const find=()=>store.real.find(x=>x.id===id)||DEMO.find(x=>x.id===id);
   switch(a){
     case"method":{if(f.method===v)return;
-      if(ui.editingId){f.method=v;f.pv=null;if(v==="V60")defaultPv(f,3)}
-      else{const keep={score:f.score,acid:f.acid,sweet:f.sweet,bitter:f.bitter,body:f.body,notes:f.notes};const had=store.real.some(b=>b.method===v);const nf=blankForm(v);
+      if(ui.editingId){f.method=v;f.pv=null;f.flow=f.puck=f.bed=null;if(v==="V60")defaultPv(f,3)}
+      else{const keep={score:f.score,acid:f.acid,sweet:f.sweet,bitter:f.bitter,body:f.body,notes:f.notes,start:f.start,finish:f.finish,caught:f.caught,channel:f.channel};const had=realBrews().some(b=>b.method===v);const nf=blankForm(v);
         if(!had){["coffee","roast","roastDate"].forEach(k=>nf[k]=f[k])}ui.form=Object.assign(nf,keep)}
       render();break}
     case"roast":f.roast=f.roast===v?"":v;render();break;
     case"clear-roast":f.roastDate="";render();break;
     case"score":f.score=+v;render();break;
     case"taste":f[t.dataset.k]=f[t.dataset.k]===+v?null:+v;render();break;
+    case"xchip":f[t.dataset.k]=f[t.dataset.k]===v?null:v;render();break;
     case"pv-n":{const pv=f.pv;const n=Math.max(1,Math.min(8,pv.rows.length+ +v));const bT=parseTime(pv.rows[0]&&pv.rows[0].t)||40;
       pv.rows=Array.from({length:n},()=>({t:"",g:""}));pv.rows[0].t=fmtTime(bT);pv.auto=true;distribute(f);render();break}
     case"pv-redo":f.pv.auto=true;distribute(f);render();break;
@@ -804,9 +1256,11 @@ $("#app").addEventListener("click",async e=>{
       if(f.method==="V60"&&f.pv){pours=pvToPours(f.pv);
         if(!pours){toast("Completa los vertidos o pon 1 vertido");return}
         for(let i=1;i<pours.length;i++)if(pours[i].t<=pours[i-1].t){toast("Revisa los tiempos de los vertidos");return}
-        bloom=pours[1].t;if(water==null)water=pours.reduce((x,p)=>x+p.g,0)}
+        bloom=pours[1].t;water=pours.reduce((x,p)=>x+p.g,0)}
       const prev=ui.editingId?store.real.find(x=>x.id===ui.editingId):null;
-      const b={id:ui.editingId||newId(),ts:prev?prev.ts:Date.now(),method:f.method,coffee:(f.coffee||"").trim(),roast:f.roast||"",roastDate:f.roastDate||"",dose:num(f.dose),water,grind:num(f.grind),temp:f.method==="Espresso"?null:num(f.temp),stopW:f.method==="Espresso"?num(f.stopW):null,time:parseTime(f.time),bloom,pours,score:f.score,acid:f.acid,sweet:f.sweet,bitter:f.bitter,body:f.body,notes:(f.notes||"").trim()};
+      const cc=prev?null:currentCoffee(f.method);
+      const b={id:ui.editingId||newId(),ts:prev?prev.ts:Date.now(),method:f.method,coffee:cc?cc.name:(f.coffee||"").trim(),roast:cc?(cc.roast||""):(f.roast||""),roastDate:cc?(cc.roastDate||""):(f.roastDate||""),coffeeId:cc?cc.id:(prev&&prev.coffeeId)||null,dose:num(f.dose),water,grind:num(f.grind),temp:f.method==="Espresso"?null:num(f.temp),stopW:f.method==="Espresso"?num(f.stopW):null,time:parseTime(f.time),bloom,pours,score:f.score,acid:f.acid,sweet:f.sweet,bitter:f.bitter,body:f.body,notes:(f.notes||"").trim()};
+      const xk=EXTR(f.method).map(x=>x[0]);XKEYS.forEach(k=>{const ok=(SENS.some(x=>x[0]===k)&&!(f.method==="Espresso"&&k==="caught"))||xk.includes(k);b[k]=ok&&f[k]?f[k]:null});
       t.disabled=true;
       try{await saveBrew(b);const was=!!ui.editingId;ui.editingId=null;ui.form=blankForm(b.method);ui.sugMethod=b.method;ui.expanded=b.id;toast(was?"Cambios guardados":"Preparación guardada");go("hist")}
       catch(err){t.disabled=false;toast(err&&err.code==="quota_exceeded"?"No queda espacio: borra preparaciones antiguas":"No se pudo guardar. Inténtalo de nuevo")}
@@ -818,29 +1272,49 @@ $("#app").addEventListener("click",async e=>{
     case"nodel":ui.confirmDel=null;render();break;
     case"del":try{await deleteBrew(id);ui.confirmDel=null;ui.expanded=null;toast("Preparación borrada");render()}catch(err){toast("No se pudo borrar")}break;
     case"edit":{const b=find();if(!b)return;ui.editingId=id;ui.form=formFrom(b);go("new");break}
-    case"dup":{const b=find();if(!b)return;ui.editingId=null;const nf=formFrom(b);Object.assign(nf,{score:null,acid:null,sweet:null,bitter:null,body:null,notes:""});ui.form=nf;go("new");toast("Receta cargada");break}
-    case"smethod":ui.sugMethod=v;render();break;
+    case"dup":{const b=find();if(!b)return;ui.editingId=null;const nf=formFrom(b);Object.assign(nf,{score:null,acid:null,sweet:null,bitter:null,body:null,notes:""});XKEYS.forEach(k=>nf[k]=null);ui.form=nf;go("new");toast("Receta cargada");break}
+    case"smethod":ui.sugMethod=v;ui.sugScope=null;render();break;
+    case"sscope":ui.sugScope=v;render();break;
+    case"rtile":ui.rOpen=ui.rOpen===v?null:v;render();break;
+    case"go-cafe":go("cafe");break;
+    case"eq-edit":ui.eqForm=setup();render();break;
+    case"eq-cancel":ui.eqForm=null;render();break;
+    case"eq-save":{const d=Object.assign({},setupDoc()||{id:"setup",kind:"setup"},ui.eqForm,{id:"setup",kind:"setup"});try{await saveBrew(d);ui.eqForm=null;toast("Equipo guardado")}catch(err){toast("No se pudo guardar")}render();break}
+    case"cf-new":ui.cafeEdit="new";ui.cafeForm={name:"",roast:"",roastDate:"",methods:CMETHODS_ALL.filter(hasMethod).filter(m=>!currentCoffee(m)).slice(0,1)};render();break;
+    case"cf-edit":{const c=coffeesAll().find(x=>x.id===id);if(!c)return;ui.cafeEdit=id;ui.cafeForm={name:c.name||"",roast:c.roast||"",roastDate:c.roastDate||"",methods:(c.methods||[]).slice()};render();break}
+    case"cf-import":{const b=realBrews().find(x=>x.id===id);if(!b)return;ui.cafeEdit="new";ui.cafeForm={name:b.coffee,roast:b.roast||"",roastDate:b.roastDate||"",methods:currentCoffee(b.method)?[]:[b.method]};render();window.scrollTo(0,0);break}
+    case"cf-cancel":ui.cafeEdit=null;ui.cafeForm=null;render();break;
+    case"cf-roast":ui.cafeForm.roast=ui.cafeForm.roast===v?"":v;render();break;
+    case"cf-m":{const ms=ui.cafeForm.methods;const i=ms.indexOf(v);if(i>=0)ms.splice(i,1);else ms.push(v);render();break}
+    case"cf-save":{const cf=ui.cafeForm;if(!(cf.name||"").trim()){toast("Ponle un nombre al café");return}
+      const prev=ui.cafeEdit==="new"?null:coffeesAll().find(x=>x.id===ui.cafeEdit);
+      const c=Object.assign({},prev||{id:"c"+Date.now().toString(36)+Math.random().toString(36).slice(2,5),kind:"coffee",createdTs:Date.now(),finished:false},{name:cf.name.trim(),roast:cf.roast||"",roastDate:cf.roastDate||""});
+      try{await assignCoffee(c,cf.methods.slice());ui.cafeEdit=null;ui.cafeForm=null;toast(prev?"Café actualizado":"Café añadido");render()}catch(err){toast("No se pudo guardar")}break}
+    case"cof-m":{const c=coffeesAll().find(x=>x.id===id);if(!c)return;const ms=(c.methods||[]).slice();const i=ms.indexOf(v);if(i>=0)ms.splice(i,1);else ms.push(v);
+      try{await assignCoffee(c,ms);toast(i>=0?"Quitado de "+v:c.name+" en uso para "+v)}catch(err){toast("No se pudo guardar")}render();break}
+    case"cf-askdone":ui.confirmDel=id;render();break;
+    case"cf-done":{const c=coffeesAll().find(x=>x.id===id);if(!c)return;try{await saveBrew(Object.assign({},c,{finished:true,finishedTs:Date.now(),methods:[]}));ui.confirmDel=null;toast("Café terminado")}catch(err){toast("No se pudo guardar")}render();break}
+    case"cf-undo":{const c=coffeesAll().find(x=>x.id===id);if(!c)return;try{await saveBrew(Object.assign({},c,{finished:false}))}catch(err){}render();break}
+    case"cf-showdone":ui.showDone=!ui.showDone;render();break;
     case"fcoffee":ui.freshCoffee=v;render();break;
     case"cparam":ui.chartParam=v;render();break;
     case"use-sug":{
       const m=ui.sugMethod;const list=brews().filter(b=>b.method===m);const fc=freshCard(m,list);
-      const {an,rec}=suggestion(m,list,ui.applyFresh?fc.fr:null);
+      const {an,rec}=suggestion(m,sugList(sugBase(m,list).base),ui.applyFresh?fc.fr:null);
       const nf=blankForm(m);nf.method=m;
       const dose=rec.dose!=null?r1(rec.dose):num(nf.dose);if(dose)nf.dose=String(dose);
       if(rec.ratio!=null&&dose)nf.water=String(Math.round(dose*rec.ratio));
       if(rec.grind!=null)nf.grind=String(Math.round(rec.grind*2)/2);if(rec.temp!=null)nf.temp=String(Math.round(rec.temp));
       if(rec.time!=null)nf.time=m==="Espresso"?String(Math.round(rec.time)):fmtTime(Math.round(rec.time/5)*5);
       if(rec.bloom!=null)nf.bloom=String(Math.round(rec.bloom));
-      if(fc.fr&&ui.freshCoffee){const src=list.find(b=>b.coffee===ui.freshCoffee);if(src){nf.coffee=src.coffee;nf.roast=src.roast||"";nf.roastDate=src.roastDate||""}}
-      else if(!nf.coffee&&an.best)nf.coffee=an.best.coffee||"";
       if(m==="V60"){const n=rec.pours!=null?Math.max(1,Math.min(8,Math.round(rec.pours))):3;
         nf.pv={auto:true,mult:rec.bloomMult||2.5,bloomG:"",rows:Array.from({length:n},()=>({t:"",g:""})),bT:rec.bloom!=null?Math.round(rec.bloom/5)*5:40};
         distribute(nf)}
       ui.editingId=null;ui.form=nf;go("new");toast("Receta sugerida cargada");break}
     case"export":{
-      const cols=["fecha","metodo","cafe","tueste","fecha_tueste","dias_tueste","dosis_g","agua_g","ratio","molienda_df54","temp_c","tiempo_s","peso_al_parar_g","bloom_s","vertidos","plan_vertidos","nota","acidez","dulzor","amargor","cuerpo","notas"];
+      const cols=["fecha","metodo","cafe","tueste","fecha_tueste","dias_tueste","dosis_g","agua_g","ratio","molienda_df54","temp_c","tiempo_s","peso_al_parar_g","bloom_s","vertidos","plan_vertidos","nota","acidez","dulzor","amargor","cuerpo","inicio","final","notas_captadas","canalizacion","flujo","pastilla","lecho","notas"];
       const q=s=>{s=s==null?"":String(s);return/[",;\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s};
-      const rows=store.real.slice().sort((a,b)=>b.ts-a.ts).map(b=>[new Date(b.ts).toISOString(),b.method,b.coffee,b.roast,b.roastDate,ageOf(b),b.dose,b.water,b.dose&&b.water?(b.water/b.dose).toFixed(2):"",b.grind,b.temp,b.time,b.stopW,b.bloom,poursOf(b)?b.pours.length-1:"",pourLine(b),b.score,b.acid,b.sweet,b.bitter,b.body,b.notes].map(q).join(","));
+      const rows=realBrews().slice().sort((a,b)=>b.ts-a.ts).map(b=>[new Date(b.ts).toISOString(),b.method,b.coffee,b.roast,b.roastDate,ageOf(b),b.dose,b.water,b.dose&&b.water?(b.water/b.dose).toFixed(2):"",b.grind,b.temp,b.time,b.stopW,b.bloom,poursOf(b)?b.pours.length-1:"",pourLine(b),b.score,b.acid,b.sweet,b.bitter,b.body,...(()=>{const v=sens(b).v;return["start","finish","caught","channel","flow","puck","bed"].map(k=>v[k]||"")})(),b.notes].map(q).join(","));
       downloadFile("bitacora-cafe-"+todayISO()+".csv","\ufeff"+[cols.join(","),...rows].join("\n"),"text/csv;charset=utf-8");
       break}
     case"backup":downloadFile("bitacora-cafe-copia-"+todayISO()+".json",JSON.stringify({app:"Bitácora de Café",formato:2,brews:store.real,deleted:store.deleted},null,1),"application/json");break;

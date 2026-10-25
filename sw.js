@@ -1,5 +1,5 @@
 // Service worker: la app funciona sin conexión. Sube el número de versión al cambiar archivos.
-const CACHE = "bitacora-cafe-v1";
+const CACHE = "bitacora-cafe-v2";
 const SHELL = ["./", "./index.html", "./config.js", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png"];
 
 self.addEventListener("install", e => {
