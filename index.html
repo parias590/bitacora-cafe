@@ -213,6 +213,20 @@ input.in,.field input,.field textarea{width:100%;min-width:0;background:var(--su
 .guide summary::after{content:"+";font-family:var(--mono);color:var(--accent);font-weight:600}
 .guide[open] summary::after{content:"–"}
 .guide p{margin:8px 0 0;font-size:.9rem}
+.scan{display:flex;flex-direction:column;gap:8px;border-top:1px dashed var(--line);padding-top:10px}
+.scanbtn{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;gap:8px;border:1px dashed var(--accent);color:var(--accent);background:var(--accent-soft);border-radius:12px;padding:11px 12px;font-weight:600;font-size:.92rem;cursor:pointer}
+.camov{position:fixed;inset:0;z-index:50;background:#000;display:flex;flex-direction:column}
+.camov video{flex:1;width:100%;height:100%;object-fit:contain}
+.camguide{position:absolute;left:6%;right:6%;top:32%;height:26%;border:2px solid rgba(255,255,255,.85);border-radius:14px;box-shadow:0 0 0 100vmax rgba(0,0,0,.35);display:flex;align-items:flex-start;justify-content:center}
+.camguide span{transform:translateY(-130%);color:#fff;font-weight:600;font-size:.9rem;text-shadow:0 1px 3px #000}
+.cambar{position:absolute;left:0;right:0;bottom:0;display:flex;gap:10px;padding:16px max(16px,env(safe-area-inset-left,0px)) calc(16px + env(safe-area-inset-bottom,0px))}
+.cambar .btn{flex:1}.cambar .btn.ghost{background:rgba(0,0,0,.5);color:#fff;border-color:rgba(255,255,255,.5)}
+.scanbtn svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linejoin:round}
+.scanres{display:flex;gap:12px;align-items:center;background:var(--sunk);border-radius:12px;padding:10px}
+.scanres img{width:92px;height:72px;object-fit:cover;border-radius:8px;flex:none}
+.scanres.warn{background:var(--accent-soft);font-size:.9rem}
+.scanv{display:grid;grid-template-columns:auto auto;gap:2px 12px;align-items:baseline}
+.scanv b{font-family:var(--mono);font-size:1.15rem;font-variant-numeric:tabular-nums}
 .tsum{font-family:var(--mono);font-size:.82rem;color:var(--muted);border-top:1px dashed var(--line);padding-top:10px}
 .tsum b{color:var(--ink)}
 .diag .src{color:var(--muted);font-size:.8rem;font-weight:500}
@@ -271,6 +285,115 @@ nav.tabs button.main[aria-current="page"] .mainic{box-shadow:0 0 0 3px var(--acc
 
 <script>
 (function(){
+/* Lector de básculas con pantalla de 7 segmentos (todo en el móvil, sin enviar la foto a ningún sitio).
+   readScale(imageBitmap|HTMLImageElement|canvas, {crop}) -> {fields:[...], time:segundos|null, weight:g|null, debug} */
+const ScaleOCR=(()=>{
+  const SEG={ "1111110":"0","0110000":"1","1101101":"2","1111001":"3","0110011":"4","1011011":"5","1011111":"6","1110000":"7","1110010":"7","1111111":"8","1111011":"9","1111111":"8","0011111":"6","1110011":"9"};
+  // orden de segmentos: a b c d e f g
+  function decode(bits){if(SEG[bits])return SEG[bits];let best=null,bd=9;for(const k in SEG){let d=0;for(let i=0;i<7;i++)if(k[i]!==bits[i])d++;if(d<bd){bd=d;best=SEG[k]}}return bd<=1?best:"?"}
+  function toCanvas(src,crop,maxW){
+    const sw=src.naturalWidth||src.videoWidth||src.width,sh=src.naturalHeight||src.videoHeight||src.height;
+    const c=crop||{x:0,y:0,w:sw,h:sh};const k=Math.min(1,maxW/c.w);
+    const cv=document.createElement("canvas");cv.width=Math.round(c.w*k);cv.height=Math.round(c.h*k);
+    cv.getContext("2d").drawImage(src,c.x,c.y,c.w,c.h,0,0,cv.width,cv.height);return cv;
+  }
+  function mask(cv){
+    const W=cv.width,H=cv.height,d=cv.getContext("2d").getImageData(0,0,W,H).data;const m=new Uint8Array(W*H);
+    // 1) dígitos azulados o blancos sobre fondo oscuro
+    const hb=new Uint32Array(256);let nb=0;for(let p=0;p<d.length;p+=4){const r=d[p],g=d[p+1],b=d[p+2];if(b>=r+12&&g>=r){hb[Math.min(g,b)]++;nb++}}
+    let acc=0,top=255;for(let v=255;v>0;v--){acc+=hb[v];if(acc>=W*H*.004){top=v;break}}
+    const T=Math.max(85,Math.min(135,top*.62));
+    let n=0;for(let i=0,p=0;i<m.length;i++,p+=4){const r=d[p],g=d[p+1],b=d[p+2];if(b>T&&g>T&&b>=r+12){m[i]=1;n++}}
+    if(n<W*H*0.0015){ // 2) pantallas blancas, rojas o verdes: píxeles muy brillantes
+      const L=new Float32Array(W*H);const hist=new Uint32Array(256);
+      for(let i=0,p=0;i<m.length;i++,p+=4){const v=Math.max(d[p],d[p+1],d[p+2]);L[i]=v;hist[v]++}
+      let acc=0,thr=250;for(let v=255;v>0;v--){acc+=hist[v];if(acc>W*H*0.02){thr=Math.max(170,v);break}}
+      for(let i=0;i<m.length;i++)m[i]=L[i]>=thr?1:0;
+    }
+    return{m,W,H};
+  }
+  function components({m,W,H}){
+    const lab=new Int32Array(W*H);const comps=[];const st=[];
+    for(let i=0;i<m.length;i++){if(!m[i]||lab[i])continue;const id=comps.length+1;let x0=1e9,y0=1e9,x1=-1,y1=-1,n=0;st.push(i);lab[i]=id;
+      while(st.length){const j=st.pop();const x=j%W,y=(j/W)|0;n++;if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y;
+        for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const xx=x+dx,yy=y+dy;if(xx<0||yy<0||xx>=W||yy>=H)continue;const k=yy*W+xx;if(m[k]&&!lab[k]){lab[k]=id;st.push(k)}}}
+      comps.push({id,x0,y0,x1,y1,w:x1-x0+1,h:y1-y0+1,n})}
+    return comps.filter(c=>c.n>=4);
+  }
+  function lit(M,x0,y0,x1,y1){x0=Math.max(0,Math.round(x0));y0=Math.max(0,Math.round(y0));x1=Math.min(M.W-1,Math.round(x1));y1=Math.min(M.H-1,Math.round(y1));let n=0,t=0;
+    for(let y=y0;y<=y1;y++)for(let x=x0;x<=x1;x++){t++;if(M.m[y*M.W+x])n++}return t?n/t:0}
+  function findRow(comps,H){
+    // filas: grupos de piezas solapadas en vertical; nos quedamos con la de dígitos más grandes y numerosos
+    const big=comps.filter(c=>c.h>=H*0.03);let best=null;
+    big.forEach(c=>{const top=c.y0,bot=c.y1;const mem=comps.filter(o=>{const cy=(o.y0+o.y1)/2;return cy>=top-(bot-top)*.1&&cy<=bot+(bot-top)*.1});
+      const tall=mem.filter(o=>o.h>=c.h*.7&&o.h<=c.h*1.3&&o.w<=c.h*1.2);const xs=new Set(tall.map(o=>Math.round(o.x0/(c.h*.4))));
+      const score=xs.size*c.h;if(tall.length>=3&&(!best||score>best.score))best={score,top,bot,h:c.h}});
+    return best;
+  }
+  function rotated(cv,deg){if(!deg)return cv;const c=document.createElement("canvas");c.width=cv.width;c.height=cv.height;const x=c.getContext("2d");x.translate(c.width/2,c.height/2);x.rotate(deg*Math.PI/180);x.drawImage(cv,-cv.width/2,-cv.height/2);return c}
+  function read(src,opt){
+    opt=opt||{};const base=toCanvas(src,opt.crop,opt.maxW||1100);let best=null;
+    const score=r=>(r.time!=null?2:0)+(r.weight!=null?2:0)+(r.fields.length?1:0)-(r.fields.join("").includes("?")?1:0);
+    outer:for(const dil of [0,3,6])for(const deg of [0,-4,4,-8,8]){let r=readOne(rotated(base,deg),opt,dil);
+      // endereza la foto según la inclinación de la fila y vuelve a leer
+      if(r.slope!=null&&Math.abs(r.slope)>.012){const r2=readOne(rotated(base,deg-Math.atan(r.slope)*180/Math.PI),opt,dil);if(score(r2)>=score(r))r=r2}
+      const sc=score(r);if(!best||sc>best.sc)best={sc,r};if(sc>=4)break outer}
+    return best.r;
+  }
+  function dilate(M,r){if(!r)return M;const {W,H}=M;const a=new Uint8Array(W*H),b=new Uint8Array(W*H);
+    for(let y=0;y<H;y++){let run=-1e9;for(let x=0;x<W;x++){if(M.m[y*W+x])run=x;if(x-run<=r)a[y*W+x]=1}run=1e9;for(let x=W-1;x>=0;x--){if(M.m[y*W+x])run=x;if(run-x<=r)a[y*W+x]=1}}
+    for(let x=0;x<W;x++){let run=-1e9;for(let y=0;y<H;y++){if(a[y*W+x])run=y;if(y-run<=r)b[y*W+x]=1}run=1e9;for(let y=H-1;y>=0;y--){if(a[y*W+x])run=y;if(run-y<=r)b[y*W+x]=1}}
+    return{m:b,W,H}}
+  function readOne(cv,opt,dil){const M=dilate(mask(cv),dil);const comps=components(M);
+    const row=findRow(comps,M.H);if(!row)return{fields:[],time:null,weight:null,error:"No encuentro los números de la báscula"};
+    const RH=row.bot-row.top+1;
+    // línea de base de la fila (la foto puede estar algo inclinada)
+    const cyOf=c=>(c.y0+c.y1)/2,cxOf=c=>(c.x0+c.x1)/2;
+    const fit=pts=>{const n=pts.length;if(n<2)return{a:0,b:pts.length?cyOf(pts[0]):(row.top+row.bot)/2};let sx=0,sy=0,sxx=0,sxy=0;pts.forEach(c=>{const x=cxOf(c),y=cyOf(c);sx+=x;sy+=y;sxx+=x*x;sxy+=x*y});const d=n*sxx-sx*sx;const a=d?(n*sxy-sx*sy)/d:0;return{a:Math.max(-.2,Math.min(.2,a)),b:(sy-a*sx)/n}};
+    const isTall=c=>c.h>=row.h*.6&&c.h<=row.h*1.35&&c.w<=row.h*2.2;
+    let tall=comps.filter(c=>isTall(c)&&Math.min(c.y1,row.bot)-Math.max(c.y0,row.top)>=c.h*.3);let L=fit(tall);
+    for(let it=0;it<2;it++){tall=comps.filter(c=>isTall(c)&&Math.abs(cyOf(c)-(L.a*cxOf(c)+L.b))<RH*.35);L=fit(tall)}
+    const yAt=x=>L.a*x+L.b;
+    const inRow=comps.filter(c=>Math.abs(cyOf(c)-yAt(cxOf(c)))<RH*.75&&c.h<=RH*1.35);
+    const small=inRow.filter(c=>c.h<RH*.3&&c.w<RH*.3);const parts=inRow.filter(c=>!small.includes(c)).sort((a,b)=>a.x0-b.x0);
+    // une piezas del mismo dígito (solapan en horizontal)
+    let digits=[];parts.forEach(p=>{const d=digits.find(q=>Math.min(q.x1,p.x1)-Math.max(q.x0,p.x0)>Math.min(q.w,p.w)*.4);
+      if(d){d.x0=Math.min(d.x0,p.x0);d.x1=Math.max(d.x1,p.x1);d.y0=Math.min(d.y0,p.y0);d.y1=Math.max(d.y1,p.y1);d.w=d.x1-d.x0+1;d.h=d.y1-d.y0+1}else digits.push(Object.assign({},p))});
+    digits=digits.filter(d=>d.h>=RH*.55);
+    // ancho típico de un dígito y separación de bloques pegados (p. ej. "0:2" unidos por los dos puntos)
+    const ws=digits.filter(d=>d.w>=RH*.35&&d.w<=RH*.9).map(d=>d.w).sort((a,b)=>a-b);const Wd=ws.length?ws[ws.length>>1]:RH*.6;
+    const extra=[];
+    digits=digits.flatMap(d=>{if(d.w<=Wd*1.45)return[d];const k=Math.max(2,Math.round(d.w/(Wd*1.15)));const out=[];
+      const L0=Object.assign({},d,{x1:d.x0+Wd-1,w:Wd});const R0=Object.assign({},d,{x0:d.x1-Wd+1,w:Wd});out.push(L0);
+      if(k>=3){for(let q=1;q<k-1;q++){const x0=Math.round(d.x0+q*(d.w-Wd)/(k-1));out.push(Object.assign({},d,{x0,x1:x0+Wd-1,w:Wd}))}}
+      out.push(R0);
+      const gx0=L0.x1+1,gx1=R0.x0-1;if(k===2&&gx1-gx0>=Wd*.12){const yc=yAt((gx0+gx1)/2);const up=lit(M,gx0,yc-RH*.35,gx1,yc-RH*.1),dn=lit(M,gx0,yc+RH*.1,gx1,yc+RH*.35),bot=lit(M,gx0,yc+RH*.35,gx1,yc+RH*.5);
+        if(up>.12&&dn>.12)extra.push({x:gx0,x1:gx1,ch:":"});else if(bot>.12)extra.push({x:gx0,x1:gx1,ch:"."})}
+      return out});
+    const chars=extra.slice();
+    const med=a=>{a=a.slice().sort((x,y)=>x-y);return a.length?a[a.length>>1]:null};
+    const fulls=digits.filter(d=>d.h>=RH*.85);const oT=med(fulls.map(d=>d.y0-yAt(cxOf(d)))),oB=med(fulls.map(d=>d.y1-yAt(cxOf(d))));
+    digits.forEach(d=>{
+      const yc=yAt(cxOf(d));const full=d.h>=RH*.85;const y0=full?d.y0:yc+(oT!=null?oT:-RH/2),y1=full?d.y1:yc+(oB!=null?oB:RH/2),h=y1-y0+1;let ch,bits;
+      if(d.w<h*.38)ch="1";else{const x0=d.x0,w=d.w;const Z=(a,b,c,e)=>lit(M,x0+a*w,y0+c*h,x0+b*w,y0+e*h);
+        const s=[Z(.28,.72,0,.14),Z(.72,1,.16,.42),Z(.72,1,.58,.84),Z(.28,.72,.86,1),Z(0,.28,.58,.84),Z(0,.28,.16,.42),Z(.28,.72,.43,.57)];
+        const thr=Math.max(.18,Math.max(...s)*.38);bits=s.map(v=>v>=thr?"1":"0").join("");ch=decode(bits);bits+=" "+s.map(v=>v.toFixed(2)).join(",")}
+      chars.push({x:d.x0,x1:d.x1,ch,bits})});
+    small.forEach(sm=>{const cy=cyOf(sm),yc=yAt(cxOf(sm));chars.push({x:sm.x0,x1:sm.x1,ch:cy>yc+RH*.22?".":":",y:cy})});
+    chars.sort((a,b)=>a.x-b.x);
+    // dos puntos: dos piezas pequeñas una encima de otra
+    const out=[];chars.forEach(c=>{const prev=out[out.length-1];if(c.ch===":"&&prev&&prev.ch===":"&&Math.abs(prev.x-c.x)<RH*.3)return;out.push(c)});
+    const digW=chars.filter(c=>/\d/.test(c.ch)).map(c=>c.x1-c.x).sort((a,b)=>a-b)[0]||RH*.5;
+    const fields=[];let cur=null;out.forEach((c,i)=>{const gap=cur?c.x-cur.last:0;if(!cur||gap>Math.max(RH*.75,digW*1.1)){cur={s:"",last:c.x1};fields.push(cur)}cur.s+=c.ch;cur.last=c.x1});
+    const fs=fields.map(f=>f.s.replace(/^[.:]+|[.:]+$/g,"")).filter(Boolean);
+    const tf=fs.find(f=>/^\d{1,2}:\d{2}$/.test(f))||null;
+    let time=null;if(tf){const[a,b]=tf.split(":");time=(+a)*60+(+b)}
+    const wf=fs.length>=2?fs[fs.length-1]:null;const weight=wf&&/^\d+(\.\d)?$/.test(wf)?parseFloat(wf):null;
+    return{fields:fs,time,weight,timeText:tf,weightText:wf,slope:L.a,debug:opt.debug?{W:M.W,H:M.H,row,line:L,Wd,digits:digits.map(d=>[d.x0,d.y0,d.w,d.h]),small:small.map(d=>[d.x0,d.y0,d.w,d.h]),chars:out.map(c=>c.ch+"@"+c.x+(c.bits?"/"+c.bits:""))}:undefined};
+  }
+  return{read};
+})();
+
 const METHODS=["V60","Espresso","AeroPress","Otro"];
 const ROASTS=["Claro","Medio","Oscuro"];
 const TASTE=[["acid","Acidez","apagada","intensa"],["sweet","Dulzor","nada","mucho"],["bitter","Amargor","nada","mucho"],["body","Cuerpo","ligero","denso"]];
@@ -785,6 +908,46 @@ function coffeeLine(f){
 /* V60: el agua total es la suma del bloom y los vertidos */
 function syncWater(f){if(f.method!=="V60"||!f.pv)return;const s=(num(f.pv.bloomG)||0)+f.pv.rows.reduce((a,r)=>a+(num(r.g)||0),0);f.water=s?String(s):""}
 function updRatio(f){const r=num(f.dose)&&num(f.water)?num(f.water)/num(f.dose):null;const v=$("#ratio-v");if(v)v.textContent=r?"1:"+r.toFixed(1):"–";const w=$("#water-v");if(w)w.textContent=num(f.water)!=null?Math.round(num(f.water))+" g":"–"}
+/* foto de la báscula: izquierda = tiempo, derecha = peso.
+   La cámara se abre dentro de la app: la imagen solo existe en memoria mientras se lee y no se guarda en el móvil. */
+function scanBlock(f){
+  const esp=f.method==="Espresso";const sc=ui.scan&&ui.scan.method===f.method?ui.scan:null;
+  const camIc=`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>`;
+  if(!sc)return `<div class="scan"><button class="scanbtn" data-act="scan-open">${camIc}Leer la báscula con la cámara</button></div>`;
+  if(sc.status==="reading")return `<div class="scan"><div class="scanres"><span class="hint">Leyendo la báscula…</span></div></div>`;
+  if(sc.status==="nocam")return `<div class="scan"><div class="scanres warn"><div>No he podido abrir la cámara. Revisa que la app tenga permiso para usarla en los ajustes del navegador.</div></div><div class="row"><button class="btn ghost small" data-act="scan-x">Cerrar</button><button class="btn primary small" data-act="scan-open">Reintentar</button></div></div>`;
+  const t=sc.time,w=sc.weight;
+  const thumb=sc.img?`<img src="${sc.img}" alt="Foto de la báscula">`:"";
+  if(t==null&&w==null)return `<div class="scan"><div class="scanres warn">${thumb}<div>No he podido leer los números. Prueba con la pantalla centrada, de frente y sin reflejos.</div></div><div class="row"><button class="btn ghost small" data-act="scan-x">Cerrar</button><button class="btn primary small" data-act="scan-open">Repetir</button></div></div>`;
+  const tTxt=t==null?"–":esp?Math.round(t)+" s":fmtTime(t),wTxt=w==null?"–":r1(w)+" g";
+  let extra="";
+  if(!esp&&w!=null&&f.pv){const sum=(num(f.pv.bloomG)||0)+f.pv.rows.reduce((a,r)=>a+(num(r.g)||0),0);const d=Math.round((w-sum)*10)/10;
+    extra=Math.abs(d)<1?`<div class="hint">Coincide con la suma de tus vertidos (${sum} g).</div>`:`<div class="hint">Tus vertidos suman ${sum} g y la báscula marca ${r1(w)} g (${d>0?"+":""}${d} g).</div><button class="btn ghost small" data-act="scan-fix">Ajustar el último vertido para que el total sea ${r1(w)} g</button>`}
+  return `<div class="scan"><div class="scanres">${thumb}<div class="scanv"><span class="hint">${esp?"Tiempo hasta parar":"Tiempo total"}</span><b>${tTxt}</b><span class="hint">${esp?"Bebida final":"Peso en la báscula"}</span><b>${wTxt}</b></div></div>
+    ${extra}
+    <div class="row"><button class="btn ghost small" data-act="scan-x">Descartar</button><button class="btn primary small" data-act="scan-use">${esp?"Usar estos valores":"Usar el tiempo"}</button></div></div>`;
+}
+const cam={stream:null,el:null};
+function closeCam(){try{if(cam.stream)cam.stream.getTracks().forEach(t=>t.stop())}catch(e){}cam.stream=null;if(cam.el){const v=cam.el.querySelector("video");if(v)v.srcObject=null;cam.el.remove()}cam.el=null}
+async function openCam(){
+  const m=ui.form.method;
+  if(!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia)){ui.scan={method:m,status:"nocam"};render();return}
+  let stream;try{stream=await navigator.mediaDevices.getUserMedia({audio:false,video:{facingMode:{ideal:"environment"},width:{ideal:1920},height:{ideal:1080}}})}
+  catch(err){ui.scan={method:m,status:"nocam"};render();return}
+  cam.stream=stream;const el=document.createElement("div");el.className="camov";el.setAttribute("role","dialog");el.setAttribute("aria-label","Cámara");
+  el.innerHTML=`<video autoplay playsinline muted></video><div class="camguide"><span>Encuadra la pantalla de la báscula</span></div><div class="cambar"><button class="btn ghost" data-cam="x">Cancelar</button><button class="btn primary" data-cam="shot">Leer</button></div>`;
+  document.body.appendChild(el);cam.el=el;const v=el.querySelector("video");v.srcObject=stream;
+  el.addEventListener("click",async e=>{const b=e.target.closest("[data-cam]");if(!b)return;
+    if(b.dataset.cam==="x"){closeCam();return}
+    if(!v.videoWidth)return;const c=document.createElement("canvas");c.width=v.videoWidth;c.height=v.videoHeight;c.getContext("2d").drawImage(v,0,0);
+    closeCam();ui.scan={method:m,status:"reading"};render();
+    await new Promise(r=>setTimeout(r,30));
+    let r={time:null,weight:null};try{r=ScaleOCR.read(c)}catch(err){}
+    // miniatura solo en memoria: desaparece con el panel y nunca se guarda
+    let img=null;try{const k=Math.min(1,360/c.width);const t=document.createElement("canvas");t.width=Math.round(c.width*k);t.height=Math.round(c.height*k);t.getContext("2d").drawImage(c,0,0,t.width,t.height);img=t.toDataURL("image/jpeg",.7);t.width=t.height=0}catch(err){}
+    c.width=c.height=0; // libera la imagen grande
+    ui.scan={method:m,status:"done",time:r.time,weight:r.weight,img};render()});
+}
 function dripTxt(f){const a=num(f.stopW),b=num(f.water);return a!=null&&b!=null?(b-a>=0?"+":"")+r1(b-a)+" g":"–"}
 function xchips(f,k,l,opts){return `<div class="xrow"><span class="hint">${l}</span><div class="chips" role="group" aria-label="${l}">${opts.map(o=>`<button class="chip" data-act="xchip" data-k="${k}" data-v="${esc(o)}" aria-pressed="${f[k]===o}">${esc(o)}</button>`).join("")}</div></div>`}
 function viewNew(){
@@ -820,12 +983,14 @@ function viewNew(){
         <div class="unit"><input id="f-stopW" data-f="stopW" inputmode="decimal" placeholder="33" value="${esc(f.stopW||"")}" aria-label="Peso al parar en gramos"><span>g</span></div>
         <div class="unit"><input id="f-water" data-f="water" inputmode="decimal" placeholder="36" value="${esc(f.water)}" aria-label="Bebida final en gramos"><span>g</span></div>
       </div>
+      ${scanBlock(f)}
     </div>`:v60?`<div class="base">
       <div class="field"><label class="hint" for="f-temp">Temperatura (°C)</label><input id="f-temp" data-f="temp" inputmode="decimal" placeholder="94" value="${esc(f.temp)}"></div>
       <div class="field"><label class="hint" for="f-time">Tiempo total</label><input id="f-time" data-f="time" inputmode="decimal" placeholder="3:00" value="${esc(f.time)}"></div>
       <div class="field"><span class="hint">Agua total <span style="opacity:.7">auto</span></span><div class="autov" id="water-v">${num(f.water)!=null?Math.round(num(f.water))+" g":"–"}</div></div>
     </div>
-    <div class="hint" style="margin-top:-4px">El agua total es la suma del bloom y los vertidos.</div>`:`<div class="grid2">
+    <div class="hint" style="margin-top:-4px">El agua total es la suma del bloom y los vertidos.</div>
+    ${scanBlock(f)}`:`<div class="grid2">
       <div class="field"><label class="hint" for="f-water">Agua total (g)</label><input id="f-water" data-f="water" inputmode="decimal" placeholder="240" value="${esc(f.water)}"></div>
       <div class="field"><label class="hint" for="f-temp">Temperatura (°C)</label><input id="f-temp" data-f="temp" inputmode="decimal" placeholder="94" value="${esc(f.temp)}"></div>
       <div class="field"><label class="hint" for="f-time">Tiempo total (m:ss)</label><input id="f-time" data-f="time" inputmode="decimal" placeholder="3:00" value="${esc(f.time)}"></div>
@@ -1236,7 +1401,7 @@ $("#app").addEventListener("click",async e=>{
   const t=e.target.closest("[data-act]");if(!t||t.id==="fresh-apply")return;const a=t.dataset.act,v=t.dataset.v,id=t.dataset.id;const f=ui.form;
   const find=()=>store.real.find(x=>x.id===id)||DEMO.find(x=>x.id===id);
   switch(a){
-    case"method":{if(f.method===v)return;
+    case"method":{if(f.method===v)return;ui.scan=null;
       if(ui.editingId){f.method=v;f.pv=null;f.flow=f.puck=f.bed=null;if(v==="V60")defaultPv(f,3)}
       else{const keep={score:f.score,acid:f.acid,sweet:f.sweet,bitter:f.bitter,body:f.body,notes:f.notes,start:f.start,finish:f.finish,caught:f.caught,channel:f.channel};const had=realBrews().some(b=>b.method===v);const nf=blankForm(v);
         if(!had){["coffee","roast","roastDate"].forEach(k=>nf[k]=f[k])}ui.form=Object.assign(nf,keep)}
@@ -1245,6 +1410,16 @@ $("#app").addEventListener("click",async e=>{
     case"clear-roast":f.roastDate="";render();break;
     case"score":f.score=+v;render();break;
     case"taste":f[t.dataset.k]=f[t.dataset.k]===+v?null:+v;render();break;
+    case"scan-open":openCam();break;
+    case"scan-x":ui.scan=null;render();break;
+    case"scan-use":{const sc=ui.scan;if(!sc)return;
+      if(f.method==="Espresso"){if(sc.time!=null)f.time=String(Math.round(sc.time));if(sc.weight!=null)f.water=String(r1(sc.weight))}
+      else{if(sc.time!=null){f.time=fmtTime(sc.time);if(f.pv&&f.pv.auto)distribute(f)}}
+      ui.scan=null;toast("Valores de la báscula aplicados");render();break}
+    case"scan-fix":{const sc=ui.scan;if(!sc||sc.weight==null||!f.pv||!f.pv.rows.length)return;
+      const sum=(num(f.pv.bloomG)||0)+f.pv.rows.reduce((a,r)=>a+(num(r.g)||0),0);const last=f.pv.rows[f.pv.rows.length-1];
+      const nv=Math.round(((num(last.g)||0)+(sc.weight-sum))*10)/10;if(nv<=0){toast("El ajuste deja el último vertido sin agua");return}
+      last.g=String(nv);f.pv.auto=false;toast("Último vertido ajustado");render();break}
     case"xchip":f[t.dataset.k]=f[t.dataset.k]===v?null:v;render();break;
     case"pv-n":{const pv=f.pv;const n=Math.max(1,Math.min(8,pv.rows.length+ +v));const bT=parseTime(pv.rows[0]&&pv.rows[0].t)||40;
       pv.rows=Array.from({length:n},()=>({t:"",g:""}));pv.rows[0].t=fmtTime(bT);pv.auto=true;distribute(f);render();break}
@@ -1262,7 +1437,7 @@ $("#app").addEventListener("click",async e=>{
       const b={id:ui.editingId||newId(),ts:prev?prev.ts:Date.now(),method:f.method,coffee:cc?cc.name:(f.coffee||"").trim(),roast:cc?(cc.roast||""):(f.roast||""),roastDate:cc?(cc.roastDate||""):(f.roastDate||""),coffeeId:cc?cc.id:(prev&&prev.coffeeId)||null,dose:num(f.dose),water,grind:num(f.grind),temp:f.method==="Espresso"?null:num(f.temp),stopW:f.method==="Espresso"?num(f.stopW):null,time:parseTime(f.time),bloom,pours,score:f.score,acid:f.acid,sweet:f.sweet,bitter:f.bitter,body:f.body,notes:(f.notes||"").trim()};
       const xk=EXTR(f.method).map(x=>x[0]);XKEYS.forEach(k=>{const ok=(SENS.some(x=>x[0]===k)&&!(f.method==="Espresso"&&k==="caught"))||xk.includes(k);b[k]=ok&&f[k]?f[k]:null});
       t.disabled=true;
-      try{await saveBrew(b);const was=!!ui.editingId;ui.editingId=null;ui.form=blankForm(b.method);ui.sugMethod=b.method;ui.expanded=b.id;toast(was?"Cambios guardados":"Preparación guardada");go("hist")}
+      try{await saveBrew(b);ui.scan=null;const was=!!ui.editingId;ui.editingId=null;ui.form=blankForm(b.method);ui.sugMethod=b.method;ui.expanded=b.id;toast(was?"Cambios guardados":"Preparación guardada");go("hist")}
       catch(err){t.disabled=false;toast(err&&err.code==="quota_exceeded"?"No queda espacio: borra preparaciones antiguas":"No se pudo guardar. Inténtalo de nuevo")}
       break}
     case"cancel-edit":ui.editingId=null;ui.form=blankForm(f.method);go("hist");break;
